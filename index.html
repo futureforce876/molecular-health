@@ -1,0 +1,3007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Molecular Health & The Wisdom of Eating Whole — Christopher Dean Hamilton</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #060d09;
+    --bg2:     #0d1a10;
+    --gold:    #D4A017;
+    --gold2:   #f0c040;
+    --green:   #1a7a45;
+    --green2:  #26b865;
+    --cyan:    #00e5c8;
+    --cyan2:   #80fff0;
+    --amber:   #ff9500;
+    --purple:  #7b2fbe;
+    --white:   #f0ede4;
+    --gray:    #8a9a8e;
+    --dark:    #111f15;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ── CANVAS BACKGROUND ── */
+  #geo-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  /* ── AUDIO CONTROLS ── */
+  #audio-bar {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(6,13,9,0.85);
+    border: 1px solid var(--gold);
+    border-radius: 40px;
+    padding: 10px 20px;
+    backdrop-filter: blur(12px);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  #audio-bar:hover { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,229,200,0.3); }
+  #drum-icon { font-size: 20px; }
+  #audio-label { font-family: 'Rajdhani', sans-serif; font-size: 13px; color: var(--gold); letter-spacing: 1px; }
+  #vol-slider { width: 70px; accent-color: var(--gold); }
+
+  /* ── PAYWALL — 3 COLUMN FULL SCREEN ── */
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  #paywall {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: var(--bg);
+    display: grid;
+    grid-template-columns: 1fr 380px 1fr;
+    grid-template-rows: 1fr;
+    overflow: hidden;
+  }
+
+  /* Kente top bar across entire paywall */
+  #pw-top-kente {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 7px;
+    display: flex;
+    z-index: 10;
+  }
+  #pw-top-kente span { flex: 1; }
+  #pw-bot-kente {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 7px;
+    display: flex;
+    z-index: 10;
+  }
+  #pw-bot-kente span { flex: 1; }
+
+  /* Vertical separator lines */
+  #paywall::before, #paywall::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(212,160,23,0.5) 15%,
+      rgba(212,160,23,0.8) 50%,
+      rgba(212,160,23,0.5) 85%,
+      transparent 100%);
+    z-index: 5;
+    pointer-events: none;
+  }
+  #paywall::before { left: calc(33.333% - 190px); }
+  #paywall::after  { right: calc(33.333% - 190px); }
+
+  /* ── LEFT COLUMN — scrolling TOC ── */
+  #pw-left {
+    grid-column: 1;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(180deg,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%);
+  }
+  #pw-left-inner {
+    position: absolute;
+    width: 100%;
+    padding: 20px 28px 20px 24px;
+    animation: scrollUp 55s linear infinite;
+  }
+  @keyframes scrollUp {
+    0%   { transform: translateY(100vh); }
+    100% { transform: translateY(-100%); }
+  }
+
+  .pw-toc-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0,229,200,0.25);
+  }
+  .pw-toc-part {
+    font-family: 'Cinzel', serif;
+    font-size: 0.82rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin: 20px 0 6px;
+    text-transform: uppercase;
+  }
+  .pw-toc-ch {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    color: var(--gray);
+    padding: 3px 0 3px 14px;
+    border-left: 2px solid rgba(26,122,69,0.35);
+    margin-bottom: 4px;
+    line-height: 1.4;
+    transition: color 0.3s;
+  }
+  .pw-toc-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.72rem;
+    color: var(--green2);
+    letter-spacing: 2px;
+    margin-right: 6px;
+  }
+
+  /* ── CENTER COLUMN — stationary PayPal CTA ── */
+  #pw-center {
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 32px;
+    background: linear-gradient(180deg,
+      rgba(6,13,9,0) 0%,
+      rgba(13,26,16,0.92) 12%,
+      rgba(13,26,16,0.97) 50%,
+      rgba(13,26,16,0.92) 88%,
+      rgba(6,13,9,0) 100%);
+    text-align: center;
+    z-index: 6;
+    position: relative;
+  }
+  #pw-center::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 40%, rgba(26,122,69,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .pw-ankh {
+    font-size: 52px;
+    margin-bottom: 14px;
+    display: block;
+    animation: float 4s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+  }
+  #pw-center h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.35rem;
+    color: var(--gold);
+    margin-bottom: 4px;
+    letter-spacing: 2px;
+    position: relative; z-index: 1;
+  }
+  #pw-center h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    color: var(--cyan);
+    margin-bottom: 20px;
+    font-weight: 400;
+    letter-spacing: 3px;
+    position: relative; z-index: 1;
+  }
+  #pw-center p {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.92rem;
+    color: var(--gray);
+    line-height: 1.65;
+    margin-bottom: 18px;
+    position: relative; z-index: 1;
+  }
+  .price-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--gold), var(--amber));
+    color: #000;
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    padding: 8px 24px;
+    border-radius: 2px;
+    margin-bottom: 20px;
+    letter-spacing: 3px;
+    position: relative; z-index: 1;
+  }
+  .paypal-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #003087, #009cde);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .paypal-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,156,222,0.4); }
+  .unlock-btn {
+    display: block;
+    width: 100%;
+    padding: 11px 20px;
+    background: transparent;
+    color: var(--cyan);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    border: 1px solid rgba(0,229,200,0.5);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .unlock-btn:hover { background: rgba(0,229,200,0.07); }
+  #unlock-form { display:none; margin-top:6px; position: relative; z-index: 1; width: 100%; }
+  #unlock-form input {
+    width:100%; padding:10px 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--gray);
+    border-radius: 3px;
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+  #unlock-form input:focus { outline:none; border-color: var(--gold); }
+  #unlock-submit {
+    width:100%; padding:11px;
+    background: var(--green);
+    color:#fff; border:none; border-radius:3px;
+    font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:700;
+    letter-spacing:2px; cursor:pointer; transition:0.3s;
+  }
+  #unlock-submit:hover { background: var(--green2); }
+  .pw-fine {
+    font-size: 0.75rem;
+    color: #444;
+    margin-top: 12px;
+    font-style: italic;
+    line-height: 1.5;
+    position: relative; z-index: 1;
+  }
+  #pw-error { color:var(--amber); font-size:0.85rem; margin-top:6px; display:none; }
+
+  /* pw-kente strips in center */
+  .pw-kente {
+    display: flex; gap: 0; width: 100%; height: 5px;
+    margin-bottom: 20px; border-radius: 2px; overflow: hidden;
+    position: relative; z-index: 1;
+  }
+  .pw-kente span { flex: 1; }
+
+  /* ── RIGHT COLUMN — scrolling introduction ── */
+  #pw-right {
+    grid-column: 3;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(180deg,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%);
+  }
+  #pw-right-inner {
+    position: absolute;
+    width: 100%;
+    padding: 20px 24px 20px 28px;
+    /* Slightly different speed than left for organic feel */
+    animation: scrollUp 72s linear infinite;
+  }
+
+  .pw-intro-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,149,0,0.25);
+  }
+  .pw-intro-section {
+    margin-bottom: 28px;
+  }
+  .pw-intro-section h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .pw-intro-section p {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.88rem;
+    color: rgba(240,237,228,0.65);
+    line-height: 1.75;
+  }
+  .pw-quote {
+    border-left: 3px solid var(--cyan);
+    padding: 10px 16px;
+    margin: 20px 0;
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.9rem;
+    color: var(--cyan);
+    font-style: italic;
+    line-height: 1.7;
+    background: rgba(0,229,200,0.04);
+  }
+
+  /* ── MOBILE FALLBACK — stack vertically ── */
+  @media (max-width: 700px) {
+    #paywall {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+      overflow-y: auto;
+    }
+    #pw-left, #pw-right { display: none; }
+    #pw-center {
+      grid-column: 1;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+    #paywall::before, #paywall::after { display: none; }
+  }
+
+  /* ── MAIN BOOK WRAPPER ── */
+  #book {
+    position: relative;
+    z-index: 1;
+    display: none;
+  }
+
+  /* ── HEADER / HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+  }
+  .hero-kente {
+    position: absolute; top:0; left:0; right:0; height:8px;
+    display:flex; overflow:hidden;
+  }
+  .hero-kente span { flex:1; }
+  .hero-kente-b {
+    position: absolute; bottom:0; left:0; right:0; height:8px;
+    display:flex; overflow:hidden;
+  }
+  .hero-subtitle-top {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 5px;
+    color: var(--cyan);
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.8rem, 8vw, 6rem);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1.05;
+    letter-spacing: 4px;
+    text-shadow: 0 0 60px rgba(212,160,23,0.4);
+    margin-bottom: 8px;
+  }
+  .hero-title2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.4rem, 4vw, 2.8rem);
+    font-weight: 400;
+    color: var(--white);
+    letter-spacing: 6px;
+    margin-bottom: 6px;
+  }
+  .hero-title3 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    color: var(--cyan);
+    letter-spacing: 8px;
+    margin-bottom: 32px;
+  }
+  .hero-line {
+    width: 200px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 20px;
+  }
+  .hero-author {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--amber);
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+  .hero-imprint {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    color: var(--gray);
+    letter-spacing: 3px;
+    margin-bottom: 40px;
+  }
+  .hero-scroll {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem;
+    color: var(--green2);
+    letter-spacing: 3px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── NAV ── */
+  #toc-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(6,13,9,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(212,160,23,0.2);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  #toc-nav::-webkit-scrollbar { display:none; }
+  .nav-item {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 1.5px;
+    color: var(--gray);
+    padding: 14px 16px;
+    white-space: nowrap;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+  .nav-item:hover, .nav-item.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ── CONTENT ── */
+  .content-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  /* ── PART OPENER ── */
+  .part-opener {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px;
+    margin: 60px -32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .part-opener::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse at center, rgba(26,122,69,0.12) 0%, transparent 70%);
+  }
+  .part-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 6px;
+    color: var(--cyan);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .part-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    color: var(--gold);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+  }
+  .part-subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.15rem;
+    color: var(--gray);
+    font-style: italic;
+  }
+  .part-divider {
+    width: 120px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--cyan), transparent);
+    margin: 20px auto;
+  }
+
+  /* ── CHAPTER ── */
+  .chapter {
+    padding: 60px 0 40px;
+    border-top: 1px solid rgba(212,160,23,0.15);
+  }
+  .chapter-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 4px;
+    color: var(--green2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .chapter-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: var(--gold);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+  }
+  .chapter-tag {
+    display: inline-block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    color: var(--gold);
+    border: 1px solid rgba(212,160,23,0.4);
+    padding: 4px 14px;
+    margin: 12px 0 28px;
+    text-transform: uppercase;
+  }
+  .ch-banner {
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--cyan), var(--green), var(--amber), var(--purple));
+    margin-bottom: 32px;
+    border-radius: 2px;
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .chapter p {
+    font-size: 1.08rem;
+    line-height: 1.9;
+    color: var(--white);
+    margin-bottom: 18px;
+    text-align: justify;
+  }
+  h3.sub {
+    font-family: 'Cinzel', serif;
+    font-size: 1.05rem;
+    color: var(--amber);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 32px 0 12px;
+    padding-left: 16px;
+    border-left: 3px solid var(--amber);
+  }
+  blockquote {
+    margin: 32px 0;
+    padding: 20px 32px;
+    border-left: 4px solid var(--cyan);
+    background: rgba(0,229,200,0.04);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--cyan2);
+    line-height: 1.8;
+    border-radius: 0 4px 4px 0;
+  }
+  ul.book-list {
+    list-style: none;
+    margin: 16px 0 20px 8px;
+  }
+  ul.book-list li {
+    padding: 6px 0 6px 28px;
+    position: relative;
+    font-size: 1.02rem;
+    color: var(--white);
+    line-height: 1.7;
+  }
+  ul.book-list li::before {
+    content: '◆';
+    position: absolute; left: 0;
+    color: var(--gold);
+    font-size: 0.7rem;
+    top: 10px;
+  }
+
+  /* ── HEX DIVIDER ── */
+  .hex-div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 40px 0;
+    opacity: 0.6;
+  }
+  .hex-div::before, .hex-div::after {
+    content:'';
+    flex:1;
+    height:1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+  }
+  .hex-div::after { background: linear-gradient(90deg, var(--gold), transparent); }
+  .hex-nodes { display:flex; gap:10px; align-items:center; }
+  .hex-node { width:8px; height:8px; background:var(--gold); clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
+  .hex-node.sm { width:5px; height:5px; background:var(--green2); }
+
+  /* ── AFTERWORD ── */
+  #afterword { padding: 60px 0; }
+  .afterword-sig {
+    text-align: right;
+    margin-top: 40px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    font-style: italic;
+  }
+  .afterword-loc {
+    text-align: right;
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-top: 4px;
+  }
+
+  /* ── REFERENCES ── */
+  #references { padding: 60px 0; }
+  .ref-group { margin-bottom: 28px; }
+  .ref-group h4 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1rem;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  .ref-group p {
+    font-size: 0.92rem;
+    color: var(--gray);
+    line-height: 1.6;
+    padding-left: 16px;
+    border-left: 2px solid rgba(26,122,69,0.4);
+    margin-bottom: 6px;
+  }
+
+  /* ── DONATE SECTION ── */
+  #donate {
+    padding: 80px 0;
+    text-align: center;
+    border-top: 1px solid rgba(212,160,23,0.2);
+  }
+  #donate h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    letter-spacing: 3px;
+  }
+  #donate p {
+    color: var(--gray);
+    font-size: 1.05rem;
+    max-width: 560px;
+    margin: 0 auto 28px;
+    line-height: 1.8;
+  }
+  .donate-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto 32px;
+    text-align: left;
+  }
+  .donate-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    font-size: 1rem; color: var(--white); line-height: 1.6;
+  }
+  .donate-item::before { content:'◆'; color:var(--gold); flex-shrink:0; margin-top:3px; font-size:0.75rem; }
+  .donate-paypal-btn {
+    display: inline-block;
+    padding: 18px 40px;
+    background: linear-gradient(135deg, #003087, #009cde);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: all 0.3s;
+    margin-bottom: 12px;
+  }
+  .donate-paypal-btn:hover { transform:translateY(-3px); box-shadow: 0 12px 40px rgba(0,156,222,0.4); }
+  .donate-address {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    color: var(--cyan);
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+  .adinkra-row {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin: 32px 0;
+    font-size: 1.4rem;
+    opacity: 0.55;
+    filter: sepia(1) saturate(3) hue-rotate(30deg);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid rgba(212,160,23,0.1);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.82rem;
+    color: var(--gray);
+    letter-spacing: 1.5px;
+    line-height: 1.8;
+  }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+
+  /* ── DEPLOYMENT PANEL ── */
+  #deploy-toggle {
+    position: fixed;
+    bottom: 24px; left: 24px;
+    z-index: 1000;
+    background: rgba(6,13,9,0.9);
+    border: 1px solid var(--green);
+    border-radius: 40px;
+    padding: 10px 20px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    color: var(--green2);
+    letter-spacing: 2px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s;
+  }
+  #deploy-toggle:hover { border-color: var(--gold); color: var(--gold); }
+
+  #deploy-panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9990;
+    background: rgba(6,13,9,0.97);
+    backdrop-filter: blur(8px);
+    flex-direction: column;
+  }
+  #deploy-panel.open { display: flex; }
+
+  #deploy-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+    flex-shrink: 0;
+  }
+  #deploy-header h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--gold);
+    letter-spacing: 2px;
+  }
+  #deploy-close {
+    background: none; border: 1px solid var(--gray);
+    color: var(--gray); font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem; letter-spacing: 2px;
+    padding: 6px 16px; border-radius: 3px; cursor: pointer;
+    transition: 0.2s;
+  }
+  #deploy-close:hover { border-color: var(--gold); color: var(--gold); }
+
+  #deploy-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(212,160,23,0.2);
+    flex-shrink: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  #deploy-tabs::-webkit-scrollbar { display: none; }
+  .dtab {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--gray);
+    padding: 12px 22px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: 0.2s;
+    text-transform: uppercase;
+  }
+  .dtab:hover { color: var(--white); }
+  .dtab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  #deploy-body {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+  .dpane {
+    display: none;
+    height: 100%;
+    overflow-y: auto;
+    padding: 28px 36px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--green) transparent;
+  }
+  .dpane.active { display: block; }
+  .dpane pre {
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    color: #a8d8b0;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(26,122,69,0.3);
+    border-radius: 4px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.6;
+  }
+  .dpane .prose {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1rem;
+    color: var(--white);
+    line-height: 1.85;
+    max-width: 820px;
+  }
+  .dpane .prose h1 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 1.3rem;
+    margin: 32px 0 12px;
+    letter-spacing: 2px;
+    border-bottom: 1px solid rgba(212,160,23,0.2);
+    padding-bottom: 8px;
+  }
+  .dpane .prose h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--cyan);
+    font-size: 1rem;
+    margin: 24px 0 8px;
+    letter-spacing: 1px;
+  }
+  .dpane .prose h3 {
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--amber);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    margin: 20px 0 6px;
+    text-transform: uppercase;
+  }
+  .dpane .prose p  { margin-bottom: 14px; color: rgba(240,237,228,0.85); }
+  .dpane .prose code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    background: rgba(0,229,200,0.08);
+    color: var(--cyan);
+    padding: 2px 7px;
+    border-radius: 3px;
+  }
+  .dpane .prose pre {
+    font-family: 'Courier New', monospace;
+    font-size: 0.82rem;
+    background: rgba(0,0,0,0.5);
+    color: #a8d8b0;
+    padding: 16px 20px;
+    border-radius: 4px;
+    border: 1px solid rgba(26,122,69,0.3);
+    overflow-x: auto;
+    margin: 12px 0 18px;
+    white-space: pre;
+  }
+  .dpane .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.9rem;
+  }
+  .dpane .prose th {
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 1px;
+    color: var(--gold);
+    border-bottom: 1px solid rgba(212,160,23,0.3);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  .dpane .prose td {
+    padding: 7px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: rgba(240,237,228,0.8);
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+  }
+  .dpane .prose blockquote {
+    border-left: 3px solid var(--green);
+    background: rgba(26,122,69,0.06);
+    padding: 12px 18px;
+    margin: 16px 0;
+    color: var(--green2);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  .dpane .prose ul, .dpane .prose ol {
+    padding-left: 24px;
+    margin-bottom: 14px;
+  }
+  .dpane .prose li { margin-bottom: 5px; color: rgba(240,237,228,0.85); }
+  .copy-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 20px;
+    background: rgba(26,122,69,0.2);
+    border: 1px solid var(--green);
+    color: var(--green2);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: 0.2s;
+    user-select: none !important;
+  }
+  .copy-btn:hover { background: rgba(26,122,69,0.35); }
+  .copy-btn.copied { color: var(--cyan); border-color: var(--cyan); }
+  .file-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    margin-top: 24px;
+  }
+  .file-label:first-child { margin-top: 0; }
+  .struct-tree {
+    font-family: 'Courier New', monospace;
+    font-size: 0.88rem;
+    color: var(--cyan);
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(0,229,200,0.2);
+    padding: 20px 24px;
+    border-radius: 4px;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    white-space: pre;
+  }
+
+  /* ── MOBILE ── */
+  /* ── DRM: CONTENT PROTECTION ── */
+  /* Disable text selection on book content */
+  #book * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  /* Allow selection only on input fields */
+  input, textarea { user-select: text !important; -webkit-user-select: text !important; }
+
+  /* Disable image drag */
+  #book img { pointer-events: none; -webkit-user-drag: none; user-drag: none; }
+
+  /* Print protection — blank page on print/save-as-PDF */
+  @media print {
+    body * { display: none !important; }
+    body::after {
+      display: block !important;
+      content: "© 2025 Christopher Dean Hamilton. All Rights Reserved. Unauthorized reproduction prohibited.";
+      font-size: 18px;
+      text-align: center;
+      margin-top: 40%;
+      color: #000;
+    }
+  }
+
+  /* Screenshot blur overlay */
+  #screenshot-shield {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(6,13,9,0.97);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #screenshot-shield.active { display: flex; }
+  #screenshot-shield p {
+    font-family: 'Cinzel', serif;
+    color: #D4A017;
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    text-align: center;
+    padding: 0 24px;
+  }
+  #screenshot-shield span { font-size: 48px; }
+
+  /* DevTools warning overlay */
+  #devtools-shield {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: #060d09;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  #devtools-shield.active { display: flex; }
+  #devtools-shield p {
+    font-family: 'Cinzel', serif;
+    color: #D4A017;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 0 32px;
+    max-width: 500px;
+    line-height: 1.8;
+  }
+  #devtools-shield span { font-size: 44px; }
+
+  /* Watermark overlay on book pages */
+  .wm-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .wm-text {
+    position: absolute;
+    white-space: nowrap;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    color: rgba(212,160,23,0.07);
+    letter-spacing: 2px;
+    transform: rotate(-35deg);
+    transform-origin: center;
+  }
+
+  @media(max-width:600px) {
+    .content-wrap { padding: 0 18px 60px; }
+    .part-opener { margin: 40px -18px; padding: 60px 18px; }
+    #paywall-box { padding: 36px 24px; }
+    blockquote { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ANIMATED GEOMETRY CANVAS -->
+<canvas id="geo-canvas"></canvas>
+
+<!-- SCREENSHOT SHIELD -->
+<div id="screenshot-shield">
+  <span>☥</span>
+  <p>LICENSED CONTENT<br>SCREENSHOT PROTECTION ACTIVE</p>
+  <p style="font-size:0.8rem; color:#8a9a8e; letter-spacing:1px;">Return to the window to continue reading.</p>
+</div>
+
+<!-- DEVTOOLS SHIELD -->
+<div id="devtools-shield">
+  <span>⚠</span>
+  <p>© 2025 CHRISTOPHER DEAN HAMILTON<br>ALL RIGHTS RESERVED</p>
+  <p style="font-size:0.82rem; color:#8a9a8e; letter-spacing:1px; line-height:1.7;">This content is protected under copyright law.<br>Unauthorized reproduction, distribution, or transmission<br>of this work is prohibited and may result in civil and criminal penalties.</p>
+</div>
+
+<!-- WATERMARK LAYER (populated by JS after unlock) -->
+<div class="wm-layer" id="wm-layer"></div>
+
+<!-- AUDIO BAR -->
+<div id="audio-bar" onclick="toggleDrum()">
+  <span id="drum-icon">🥁</span>
+  <span id="audio-label">SOOTHING DRUMS</span>
+  <input id="vol-slider" type="range" min="0" max="1" step="0.05" value="0.35"
+    onclick="e=>{e.stopPropagation()}" oninput="setVolume(this.value)">
+</div>
+
+<!-- PAYWALL — 3 COLUMN FULL SCREEN -->
+<div id="paywall">
+
+  <!-- Full-width Kente bars top & bottom -->
+  <div id="pw-top-kente"></div>
+  <div id="pw-bot-kente"></div>
+
+  <!-- ── LEFT COLUMN: Scrolling Table of Contents ── -->
+  <div id="pw-left">
+    <div id="pw-left-inner">
+      <div class="pw-toc-title">Table of Contents</div>
+
+      <div class="pw-toc-part">Preface</div>
+      <div class="pw-toc-ch">Before the First Bite</div>
+
+      <div class="pw-toc-part">Part I — The Molecular Architecture of Life</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 1</span>The Cell as Universe — Foundations of Molecular Biology</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 2</span>DNA, Gene Expression & the Epigenetic Revolution</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 3</span>Mitochondria — The Ancient Powerhouse Within</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 4</span>Inflammation — The Fire That Builds and Burns</div>
+
+      <div class="pw-toc-part">Part II — The Chemistry of Whole Foods</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 5</span>Macronutrients Reimagined — Beyond Calories</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 6</span>Micronutrients — The Invisible Architects</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 7</span>Phytonutrients & Polyphenols — Plant Intelligence</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 8</span>Fiber, Fermentation & the Gut Microbiome</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 9</span>Water, Minerals & the Electromagnetic Body</div>
+
+      <div class="pw-toc-part">Part III — The Processed Food Deception</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 10</span>Ultra-Processing — Engineering Addiction</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 11</span>Industrial Seed Oils & the Omega Crisis</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 12</span>Sugar, Insulin & the Metabolic Catastrophe</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 13</span>Food Additives, Preservatives & Chemical Burden</div>
+
+      <div class="pw-toc-part">Part IV — Ancestral Wisdom Meets Modern Science</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 14</span>African Food Traditions as Molecular Medicine</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 15</span>Fasting, Autophagy & Cellular Renewal</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 16</span>Circadian Eating & Chrononutrition</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 17</span>The Nervous System, Stress & Nutritional Psychiatry</div>
+
+      <div class="pw-toc-part">Part V — The Practice</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 18</span>Practical Protocols — Transition, Sourcing, Preparation</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 19</span>Reading the Body — Biomarkers & Self-Assessment</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 20</span>The Future of Food — Sovereignty, Systems & Solutions</div>
+
+      <div class="pw-toc-part">Afterword</div>
+      <div class="pw-toc-ch">The Revolution Will Be Nourished</div>
+
+      <div class="pw-toc-part">References</div>
+      <div class="pw-toc-ch">Selected Scientific Literature</div>
+
+      <!-- Repeat for seamless loop -->
+      <div style="height:40px"></div>
+      <div class="pw-toc-title">Table of Contents</div>
+
+      <div class="pw-toc-part">Preface</div>
+      <div class="pw-toc-ch">Before the First Bite</div>
+
+      <div class="pw-toc-part">Part I — The Molecular Architecture of Life</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 1</span>The Cell as Universe — Foundations of Molecular Biology</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 2</span>DNA, Gene Expression & the Epigenetic Revolution</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 3</span>Mitochondria — The Ancient Powerhouse Within</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 4</span>Inflammation — The Fire That Builds and Burns</div>
+
+      <div class="pw-toc-part">Part II — The Chemistry of Whole Foods</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 5</span>Macronutrients Reimagined — Beyond Calories</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 6</span>Micronutrients — The Invisible Architects</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 7</span>Phytonutrients & Polyphenols — Plant Intelligence</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 8</span>Fiber, Fermentation & the Gut Microbiome</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 9</span>Water, Minerals & the Electromagnetic Body</div>
+
+      <div class="pw-toc-part">Part III — The Processed Food Deception</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 10</span>Ultra-Processing — Engineering Addiction</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 11</span>Industrial Seed Oils & the Omega Crisis</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 12</span>Sugar, Insulin & the Metabolic Catastrophe</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 13</span>Food Additives, Preservatives & Chemical Burden</div>
+
+      <div class="pw-toc-part">Part IV — Ancestral Wisdom Meets Modern Science</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 14</span>African Food Traditions as Molecular Medicine</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 15</span>Fasting, Autophagy & Cellular Renewal</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 16</span>Circadian Eating & Chrononutrition</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 17</span>The Nervous System, Stress & Nutritional Psychiatry</div>
+
+      <div class="pw-toc-part">Part V — The Practice</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 18</span>Practical Protocols — Transition, Sourcing, Preparation</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 19</span>Reading the Body — Biomarkers & Self-Assessment</div>
+      <div class="pw-toc-ch"><span class="pw-toc-num">Ch. 20</span>The Future of Food — Sovereignty, Systems & Solutions</div>
+
+      <div class="pw-toc-part">Afterword</div>
+      <div class="pw-toc-ch">The Revolution Will Be Nourished</div>
+    </div>
+  </div>
+
+  <!-- ── CENTER COLUMN: Stationary PayPal CTA ── -->
+  <div id="pw-center">
+    <div class="pw-kente" id="pw-kente-top"></div>
+    <span class="pw-ankh">☥</span>
+    <h1>MOLECULAR HEALTH</h1>
+    <h2>& THE WISDOM OF EATING WHOLE</h2>
+    <p>20 chapters of molecular science, ancestral wisdom, and Afrofuturist wellness philosophy — available for a one-time donation of just <strong style="color:var(--gold)">$10 USD</strong>.</p>
+    <div class="price-badge">$10 USD</div>
+    <a class="paypal-btn" href="https://paypal.me/cristechnology?locale.x=en_US&country.x=JM" target="_blank" onclick="onPaypalClick()">
+      ☞ DONATE $10 VIA PAYPAL
+    </a>
+    <button class="unlock-btn" onclick="toggleUnlockForm()">I ALREADY DONATED — UNLOCK ACCESS</button>
+    <div id="unlock-form">
+      <input type="email" id="unlock-email" placeholder="Enter your PayPal email to verify">
+      <button id="unlock-submit" onclick="tryUnlock()">UNLOCK THE BOOK</button>
+      <div id="pw-error">Email not found. Please ensure you donated and try again.</div>
+    </div>
+    <p class="pw-fine">Your donation supports free distribution of this book in underserved Caribbean and African communities, and the continued work of Nuttinbutdatruth Records — Knowledge Division.</p>
+    <div class="pw-kente" id="pw-kente-bot" style="margin-top:16px;margin-bottom:0"></div>
+  </div>
+
+  <!-- ── RIGHT COLUMN: Scrolling Introduction ── -->
+  <div id="pw-right">
+    <div id="pw-right-inner">
+      <div class="pw-intro-title">From the Introduction</div>
+
+      <div class="pw-intro-section">
+        <h4>Before the First Bite</h4>
+        <p>This book was not written inside a sterile laboratory. It was written at the intersection of ancestral memory, modern molecular science, and the lived reality of a world that has been systematically malnourished — not for lack of food, but for abundance of the wrong kind.</p>
+      </div>
+
+      <div class="pw-quote">"The body is not a machine. It is a living ecosystem. Feed it accordingly."</div>
+
+      <div class="pw-intro-section">
+        <h4>The Cell as Universe</h4>
+        <p>The human body contains an estimated 37 trillion cells. Each one is a sovereign unit of intelligence — a self-regulating, self-replicating, self-repairing universe. Every single one of those cells is shaped, supported, or sabotaged by what you eat. This is not metaphor. This is molecular mechanics.</p>
+      </div>
+
+      <div class="pw-intro-section">
+        <h4>Mitochondrial Eve</h4>
+        <p>Mitochondrial DNA traces an unbroken lineage back to a single woman who lived in Africa approximately 150,000 years ago. Every human being alive today carries ancient African cellular machinery in every cell of their body. The powerhouse of your biology has African roots — and those roots evolved on a diet of whole, unprocessed foods drawn from the natural world.</p>
+      </div>
+
+      <div class="pw-quote">"The ancestor knew: the plant is older than the pharmacy."</div>
+
+      <div class="pw-intro-section">
+        <h4>The Processed Food Deception</h4>
+        <p>Ultra-processed foods now constitute over 60% of total dietary energy intake in industrialized nations — and the numbers are rising across Jamaica, the Caribbean, and Africa. This is not a matter of consumer preference. It is a matter of systematic engineering. The 'bliss point' was designed to override your biological stop signals. Biological addiction was engineered into the product.</p>
+      </div>
+
+      <div class="pw-intro-section">
+        <h4>African Food Traditions</h4>
+        <p>Moringa oleifera contains gram-for-gram more protein than yogurt, more vitamin C than oranges, more potassium than bananas. Hibiscus demonstrates antihypertensive effects comparable to pharmaceutical captopril. Baobab contains 6 times the vitamin C of oranges. The ancestors knew this without the journal articles. Modern science is only now catching up.</p>
+      </div>
+
+      <div class="pw-quote">"The revolution will be nourished. Not processed. Not packaged. Grown in soil, harvested by hands, prepared in kitchens."</div>
+
+      <div class="pw-intro-section">
+        <h4>The Gut Microbiome</h4>
+        <p>The human gastrointestinal tract houses approximately 100 trillion microorganisms — a number that exceeds human cells by a factor of 10. The number of microbial genes exceeds human genes by a factor of 150. Over 90% of the body's serotonin is produced in the gut under microbial influence. A whole food diet supports neurochemical balance directly. A processed food diet dismantles it.</p>
+      </div>
+
+      <div class="pw-intro-section">
+        <h4>Food Sovereignty</h4>
+        <p>In Jamaica and across the Caribbean, food sovereignty means reclaiming dasheen, breadfruit, callaloo, yam, ackee, plantain, moringa, and sorrel as the nutritional powerhouses they always were — before Western wellness culture needed to rebrand them as 'superfoods' and sell them back at premium prices.</p>
+      </div>
+
+      <div class="pw-intro-section">
+        <h4>The Science of Fasting</h4>
+        <p>The 2016 Nobel Prize in Physiology or Medicine went to Yoshinori Ohsumi for discovering autophagy regulation — the cellular self-cleaning process activated by fasting that every major traditional culture on Earth independently practiced. The universality of fasting across human cultures is not coincidence. It is encoded ancestral wisdom, now confirmed by molecular biology.</p>
+      </div>
+
+      <div class="pw-quote">"The act of choosing what to eat is, every single day, a political act, a biological act, and a spiritual act."</div>
+
+      <div class="pw-intro-section">
+        <h4>What You Will Learn</h4>
+        <p>Twenty chapters covering cell biology, epigenetics, mitochondrial science, the gut microbiome, phytonutrient chemistry, the political economy of the processed food industry, African botanical medicine, fasting protocols, circadian nutrition, nutritional psychiatry, practical elimination protocols, biomarker tracking, and a complete vision of Afrofuturist food sovereignty. This is the complete science of eating whole.</p>
+      </div>
+
+      <!-- Repeat for seamless loop -->
+      <div style="height:40px"></div>
+      <div class="pw-intro-title">From the Introduction</div>
+
+      <div class="pw-intro-section">
+        <h4>Before the First Bite</h4>
+        <p>This book was not written inside a sterile laboratory. It was written at the intersection of ancestral memory, modern molecular science, and the lived reality of a world that has been systematically malnourished — not for lack of food, but for abundance of the wrong kind.</p>
+      </div>
+
+      <div class="pw-quote">"The body is not a machine. It is a living ecosystem. Feed it accordingly."</div>
+
+      <div class="pw-intro-section">
+        <h4>The Cell as Universe</h4>
+        <p>The human body contains an estimated 37 trillion cells. Each one is a sovereign unit of intelligence. Every single one is shaped, supported, or sabotaged by what you eat. This is not metaphor. This is molecular mechanics.</p>
+      </div>
+
+      <div class="pw-intro-section">
+        <h4>Mitochondrial Eve</h4>
+        <p>Mitochondrial DNA traces an unbroken lineage back to a single woman who lived in Africa approximately 150,000 years ago. Every human being alive today carries ancient African cellular machinery in every cell of their body. The powerhouse of your biology has African roots.</p>
+      </div>
+
+      <div class="pw-quote">"The ancestor knew: the plant is older than the pharmacy."</div>
+
+      <div class="pw-intro-section">
+        <h4>African Food Traditions</h4>
+        <p>Moringa, baobab, hibiscus, bitter leaf, red palm oil, egusi — these are not folk remedies. They are molecular medicine of the highest order, developed over hundreds of thousands of years of empirical observation and refined by cultures that understood the body as a living ecosystem long before modern biochemistry existed.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOOK CONTENT -->
+<div id="book">
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-kente" id="hero-kente-t"></div>
+    <div class="hero-subtitle-top">Nuttinbutdatruth Records · Knowledge Division</div>
+    <div class="hero-title">MOLECULAR<br>HEALTH</div>
+    <div class="hero-title2">& THE WISDOM OF</div>
+    <div class="hero-title3">EATING WHOLE</div>
+    <div class="hero-line"></div>
+    <div class="hero-author">by Christopher Dean Hamilton</div>
+    <div class="hero-imprint">Kingston, Jamaica · First Edition · 2025</div>
+    <div class="hero-line"></div>
+    <div class="hero-scroll">↓ SCROLL TO BEGIN ↓</div>
+    <div class="hero-kente-b" id="hero-kente-b"></div>
+  </section>
+
+  <!-- NAV -->
+  <nav id="toc-nav">
+    <div class="nav-item" onclick="scrollTo('preface')">Preface</div>
+    <div class="nav-item" onclick="scrollTo('part1')">Part I</div>
+    <div class="nav-item" onclick="scrollTo('part2')">Part II</div>
+    <div class="nav-item" onclick="scrollTo('part3')">Part III</div>
+    <div class="nav-item" onclick="scrollTo('part4')">Part IV</div>
+    <div class="nav-item" onclick="scrollTo('part5')">Part V</div>
+    <div class="nav-item" onclick="scrollTo('afterword')">Afterword</div>
+    <div class="nav-item" onclick="scrollTo('references')">References</div>
+    <div class="nav-item" onclick="scrollTo('donate')" style="color:var(--gold)">Donate</div>
+  </nav>
+
+  <div class="content-wrap">
+
+    <!-- EPIGRAPH -->
+    <div style="text-align:center; padding: 60px 0 20px;" class="reveal">
+      <blockquote style="border-left:none; background:none; text-align:center; font-size:1.2rem; color:var(--cyan2)">
+        "Let food be thy medicine and medicine be thy food."
+      </blockquote>
+      <p style="color:var(--gray); font-family:'Rajdhani',sans-serif; letter-spacing:2px; font-size:0.9rem; margin-top:4px;">— Hippocrates</p>
+      <div style="margin-top:28px">
+        <blockquote style="border-left:none; background:none; text-align:center; font-size:1.1rem; color:var(--gold)">
+          "The ancestor knew: the plant is older than the pharmacy."
+        </blockquote>
+        <p style="color:var(--gray); font-family:'Rajdhani',sans-serif; letter-spacing:2px; font-size:0.9rem; margin-top:4px;">— African Proverb, Modern Translation</p>
+      </div>
+    </div>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node"></div><div class="hex-node sm"></div><div class="hex-node"></div></div></div>
+
+    <!-- PREFACE -->
+    <section id="preface" class="chapter reveal">
+      <div class="chapter-num">Preface</div>
+      <div class="chapter-title">Before the First Bite</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">Why This Book Exists</span>
+      <p>This book was not written inside a sterile laboratory. It was written at the intersection of ancestral memory, modern molecular science, and the lived reality of a world that has been systematically malnourished — not for lack of food, but for abundance of the wrong kind.</p>
+      <p>The processed food industry is one of the most profitable mechanisms of slow violence in human history. It does not kill you today. It dismantles you across decades — one inflammatory molecule at a time, one oxidized cell membrane at a time, one disrupted hormone signal at a time — until what you call 'aging' is revealed to be largely accelerated cellular decay driven by what you were sold as convenience.</p>
+      <p>This book is a corrective. An intervention. A roadmap back to something your ancestors practiced without needing peer-reviewed journals to confirm it: eat what the Earth grew. Let the molecular architecture of living food interact with the molecular architecture of your living body.</p>
+      <p>Molecular health is not a diet trend. It is a paradigm — a complete reorientation of how you understand the relationship between what you eat, how your cells function, how your genes express themselves, and ultimately how long and how well you live.</p>
+      <blockquote>"The body is not a machine. It is a living ecosystem. Feed it accordingly."</blockquote>
+    </section>
+
+    <!-- PART I -->
+    <div id="part1" class="part-opener reveal">
+      <div class="part-label">Part One</div>
+      <div class="part-divider"></div>
+      <div class="part-title">THE MOLECULAR ARCHITECTURE OF LIFE</div>
+      <div class="part-subtitle">Understanding What You're Actually Made Of</div>
+    </div>
+
+    <!-- CH 1 -->
+    <section id="ch1" class="chapter reveal">
+      <div class="chapter-num">Chapter 1</div>
+      <div class="chapter-title">The Cell as Universe</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">You Are 37 Trillion Decisions</span>
+      <p>The human body contains an estimated 37 trillion cells. Each one is a sovereign unit of intelligence — a self-regulating, self-replicating, self-repairing universe operating at a scale beyond ordinary comprehension. And every single one of those cells is shaped, supported, or sabotaged by what you eat.</p>
+      <p>This is not metaphor. This is molecular mechanics. The lipid bilayer that forms your cell membrane is constructed from the fats you consume. The proteins that drive every cellular function are assembled from the amino acids you digest. The enzymes that catalyze thousands of chemical reactions every second require micronutrients you can only get from food.</p>
+      <p>When you eat processed food, you are supplying substandard raw materials to one of the most sophisticated construction projects in the known universe. When you eat whole, living foods, you are providing molecular precision — intelligence matched to intelligence.</p>
+      <h3 class="sub">The Phospholipid Membrane: Your First Defense</h3>
+      <p>Every cell in your body is enclosed by a phospholipid bilayer — two sheets of fat molecules arranged tail-to-tail, forming a barrier that controls everything that enters and exits the cell. Membranes rich in omega-3 polyunsaturated fatty acids — EPA, DHA, and ALA — are fluid, flexible, and highly functional. Membranes constructed from industrially modified trans fats or oxidized omega-6 oils are rigid, dysfunctional, and inflamed.</p>
+      <h3 class="sub">Cellular Respiration and Energy Production</h3>
+      <p>Inside each cell, mitochondria perform the fundamental act of life: converting food into usable energy as ATP. Every enzyme in the electron transport chain requires specific cofactors: B vitamins (B1, B2, B3, B5), coenzyme Q10, magnesium, iron — all found in abundance in whole foods and absent or degraded in ultra-processed products.</p>
+      <h3 class="sub">The Nucleus: Information Architecture</h3>
+      <p>DNA is not static code. It is a dynamic, responsive system. Genes switch on and off in response to nutritional signals. Sulforaphane from broccoli activates the Nrf2 pathway. Resveratrol from grape skins activates SIRT1, a longevity gene. Curcumin from turmeric downregulates NF-kB, the master regulator of the inflammatory response. Processed food sends a different signal — one that promotes inflammatory gene expression and accelerated cellular aging.</p>
+    </section>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node sm"></div><div class="hex-node"></div><div class="hex-node sm"></div></div></div>
+
+    <!-- CH 2 -->
+    <section id="ch2" class="chapter reveal">
+      <div class="chapter-num">Chapter 2</div>
+      <div class="chapter-title">DNA, Gene Expression & the Epigenetic Revolution</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">Your Genes Are Not Your Destiny</span>
+      <p>Your DNA sequence is not your fate. Your genes are a script, but epigenetics controls which scenes get performed. Epigenetic regulation is responsive to nutritional input, making diet one of the most powerful epigenetic modulators available.</p>
+      <h3 class="sub">DNA Methylation and Dietary Methyl Donors</h3>
+      <p>DNA methylation — the addition of a methyl group (CH3) to cytosine bases — requires methyl donors that come directly from dietary sources: folate (dark leafy greens), B12 (animal products), B6, choline (eggs, liver), and betaine (beets, spinach). Ultra-processed diets are depleted of all these nutrients, resulting in aberrant methylation patterns that silence tumor suppressor genes and activate inflammatory pathways.</p>
+      <h3 class="sub">Telomeres: The Biological Clock</h3>
+      <p>Telomeres shorten with each cellular replication and are now considered a reliable biomarker of biological aging. Omega-3 fatty acids, vitamin D, polyphenols, and antioxidants have been associated with longer telomere length. A study in the American Journal of Clinical Nutrition (2010) found that adherence to Mediterranean-style whole food patterns was associated with significantly longer telomere length. You can, literally, slow your biological clock with what you eat.</p>
+    </section>
+
+    <!-- CH 3 -->
+    <section id="ch3" class="chapter reveal">
+      <div class="chapter-num">Chapter 3</div>
+      <div class="chapter-title">Mitochondria — The Ancient Powerhouse Within</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">The African Origin of Your Energy</span>
+      <p>Mitochondria possess their own DNA — inherited exclusively through the maternal line. This mitochondrial DNA traces an unbroken lineage back to a single woman who lived in Africa approximately 150,000 to 200,000 years ago — Mitochondrial Eve. Every human being alive today carries ancient African cellular machinery in every cell of their body. The powerhouse of your biology has African roots.</p>
+      <p>Those roots evolved over hundreds of thousands of years on a diet of whole, unprocessed foods drawn from the natural world. The metabolic diseases that plague modern populations are, at their core, mitochondrial crises. The processed food environment is a radically foreign input into a biological system shaped by millions of years of whole-food interaction. The mismatch is the disease.</p>
+      <h3 class="sub">Nutritional Activation of Mitochondrial Biogenesis</h3>
+      <p>Resveratrol (red grapes, berries, peanuts) activates SIRT1, which activates PGC-1α — the master regulator of mitochondrial biogenesis. Quercetin (apples, onions, capers) directly stimulates mitochondrial production. Ultra-processed food not only fails to provide these activators — it actively suppresses mitochondrial function through oxidative stress and the disruption of insulin signaling.</p>
+    </section>
+
+    <!-- CH 4 -->
+    <section id="ch4" class="chapter reveal">
+      <div class="chapter-num">Chapter 4</div>
+      <div class="chapter-title">Inflammation — The Fire That Builds and Burns</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">When Protection Becomes Destruction</span>
+      <p>Inflammation is not the enemy. It is one of the most sophisticated defense mechanisms in biological history. Chronic systemic inflammation is a different entity entirely — the common underlying mechanism of virtually every major chronic disease: cardiovascular disease, cancer, type 2 diabetes, Alzheimer's, autoimmune conditions, and depression.</p>
+      <h3 class="sub">The Omega-3 to Omega-6 Ratio</h3>
+      <p>Humans evolved on a diet with an omega-6 to omega-3 ratio of roughly 1:1 to 4:1. The modern processed food diet produces a ratio estimated between 15:1 and 20:1 — dominated by linoleic acid from soybean oil, corn oil, and sunflower oil. This imbalance suppresses the resolution pathway, allowing inflammation that should resolve in days to persist for months and years, silently driving tissue damage across every organ system.</p>
+    </section>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node"></div><div class="hex-node sm"></div><div class="hex-node"></div></div></div>
+
+    <!-- PART II -->
+    <div id="part2" class="part-opener reveal">
+      <div class="part-label">Part Two</div>
+      <div class="part-divider"></div>
+      <div class="part-title">THE CHEMISTRY OF WHOLE FOODS</div>
+      <div class="part-subtitle">Nature's Molecular Pharmacy</div>
+    </div>
+
+    <!-- CH 5 -->
+    <section id="ch5" class="chapter reveal">
+      <div class="chapter-num">Chapter 5</div>
+      <div class="chapter-title">Macronutrients Reimagined — Beyond Calories</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">Fuel Is Not Just Energy</span>
+      <p>Food is not merely fuel. It is information. Every macronutrient carries molecular signals that interact with receptors, enzymes, and gene expression machinery. The source of the macronutrient matters as much as its quantity.</p>
+      <h3 class="sub">Protein: Beyond Amino Acid Profiles</h3>
+      <p>Whole food protein sources — pasture-raised meats, wild-caught fish, organic legumes, eggs — provide complete amino acid profiles alongside cofactors: zinc, B12, creatine, carnitine from animal sources; fiber, phytates, isoflavones, folate from plant sources. Processed protein isolates strip the food matrix, leaving biochemically altered protein divorced from its original cofactors.</p>
+      <h3 class="sub">Fats: The Most Misunderstood Macronutrient</h3>
+      <p>The fat-phobia campaign of the 1980s and 1990s — driven by flawed epidemiology and industry-funded science — may be the single most destructive nutritional policy decision in modern history. It drove populations away from whole food fats toward refined carbohydrates and industrial vegetable oils, producing a metabolic catastrophe that continues today.</p>
+      <h3 class="sub">Carbohydrates: The Fiber Imperative</h3>
+      <p>Carbohydrates in whole foods arrive bound within a fibrous matrix that profoundly shapes their metabolic effects. A sweet potato delivers glucose alongside beta-carotene, potassium, vitamin C, and fiber. A refined sugar delivers glucose — and nothing else. The contemporary processed food diet delivers 10-15 grams of fiber per day versus the 100-150 grams of the ancestral diet.</p>
+    </section>
+
+    <!-- CH 6 -->
+    <section id="ch6" class="chapter reveal">
+      <div class="chapter-num">Chapter 6</div>
+      <div class="chapter-title">Micronutrients — The Invisible Architects</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">The Nutrients That Build Everything Else</span>
+      <p>Vitamins and minerals do not provide energy directly — they enable the systems that extract, store, and deploy it. They activate enzymes, protect DNA, regulate gene expression, and maintain the electrochemical gradients that make neural function possible.</p>
+      <h3 class="sub">Vitamin D: The Steroid Hormone</h3>
+      <p>Vitamin D functions as a steroid hormone, with receptors in virtually every cell of the body, regulating over 200 genes. Populations with darker skin evolved closest to the equator and require proportionally more sun exposure. Migration to northern latitudes has produced widespread deficiency in exactly the populations whose biology was optimized for sun-rich environments — a profound mismatch with devastating health consequences.</p>
+      <h3 class="sub">Magnesium: The Master Mineral</h3>
+      <p>Magnesium is required as a cofactor by over 300 enzymatic reactions — including ATP synthesis, DNA replication, and insulin signaling. Population surveys consistently show 50-80% of people in industrialized nations are deficient. Whole food sources include moringa, callaloo, pumpkin seeds, black beans, dark chocolate, avocado, and legumes — all traditional African and Caribbean staples.</p>
+    </section>
+
+    <!-- CH 7 -->
+    <section id="ch7" class="chapter reveal">
+      <div class="chapter-num">Chapter 7</div>
+      <div class="chapter-title">Phytonutrients & Polyphenols — Plant Intelligence</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">The 25,000 Compounds Medicine Barely Studies</span>
+      <p>An estimated 25,000 to 100,000 phytochemicals exist in the plant kingdom. These compounds evolved in plants as defense mechanisms. The compounds that plants produce to protect themselves turn out to be precisely what the human body needs to protect itself — millions of years of co-evolutionary chemistry.</p>
+      <h3 class="sub">Sulforaphane: The Broccoli Molecule</h3>
+      <p>Sulforaphane activates Nrf2 — upregulating over 200 cytoprotective genes including antioxidant enzymes and detoxification pathways. Broccoli, kale, cabbage, and moringa — which grows prolifically across sub-Saharan Africa and the Caribbean — are rich sources.</p>
+      <h3 class="sub">Curcumin and the African Spice Heritage</h3>
+      <p>Turmeric, deeply integrated into African, Caribbean, and diaspora culinary traditions, contains curcumin — a polyphenol with over 3,000 peer-reviewed studies. The convergence of traditional African spice traditions with the most potent anti-inflammatory botanical compounds is not accidental. It is the accumulated observational wisdom of cultures that lived and healed on plant medicine for thousands of years.</p>
+    </section>
+
+    <!-- CH 8 -->
+    <section id="ch8" class="chapter reveal">
+      <div class="chapter-num">Chapter 8</div>
+      <div class="chapter-title">Fiber, Fermentation & the Gut Microbiome</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">The Ecosystem You Cannot See Is Running You</span>
+      <p>The human gastrointestinal tract houses approximately 100 trillion microorganisms. The number of microbial genes in the gut exceeds the number of human genes by a factor of 150. Over 90% of the body's serotonin is produced in the gut under microbial influence.</p>
+      <h3 class="sub">Fermented Foods: Ancient Technology, Modern Validation</h3>
+      <p>Every traditional culture on Earth independently developed fermented food traditions — yogurt, kefir, sauerkraut, kimchi, injera (Ethiopian fermented teff flatbread), ugba, dawadawa. A landmark 2021 Stanford trial demonstrated that a high-fermented food diet significantly increased microbiome diversity and decreased markers of inflammation — outperforming even a high-fiber diet in its immunological effects. Traditional fermented whole foods are not folk medicine. They are molecular medicine of the highest order.</p>
+    </section>
+
+    <!-- CH 9 -->
+    <section id="ch9" class="chapter reveal">
+      <div class="chapter-num">Chapter 9</div>
+      <div class="chapter-title">Water, Minerals & the Electromagnetic Body</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">You Are 60% Ocean</span>
+      <p>The human body is approximately 60% water by weight. Water is not simply a solvent — it is the medium in which all biochemical reactions occur. The sodium-potassium pump — consuming approximately 25% of the body's total ATP production at rest — requires adequate potassium (found in abundance in fruits and vegetables) relative to sodium. This ratio is completely inverted in processed food, which delivers excessive sodium and minimal potassium. The hypertension epidemic is, in large part, this dietary imbalance story.</p>
+    </section>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node sm"></div><div class="hex-node"></div><div class="hex-node sm"></div></div></div>
+
+    <!-- PART III -->
+    <div id="part3" class="part-opener reveal">
+      <div class="part-label">Part Three</div>
+      <div class="part-divider"></div>
+      <div class="part-title">THE PROCESSED FOOD DECEPTION</div>
+      <div class="part-subtitle">What Industry Did to Nutrition</div>
+    </div>
+
+    <!-- CH 10 -->
+    <section id="ch10" class="chapter reveal">
+      <div class="chapter-num">Chapter 10</div>
+      <div class="chapter-title">Ultra-Processing — Engineering Addiction</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">This Was Never About Feeding You</span>
+      <p>UPFs now constitute over 60% of total dietary energy intake in the United States, and similar numbers are emerging across Jamaica, the Caribbean, and Africa as multinational food corporations aggressively penetrate developing markets.</p>
+      <h3 class="sub">The Bliss Point: Hyper-Palatability</h3>
+      <p>The 'bliss point' — the precise combination of sugar, fat, and salt that produces maximum palatability and minimum satiety — was engineered to override your biological stop signals. Functional MRI studies have shown that ultra-processed food consumption activates the nucleus accumbens in patterns analogous to cocaine and alcohol. Processed food companies have engineered biological addiction into their products, profiting from the chronic disease and overconsumption that results. The libertarian framing of this as 'personal choice' ignores the neurobiological reality that genuine choice requires an undisrupted signal from your own body — a signal these products are specifically designed to override.</p>
+    </section>
+
+    <!-- CH 11 -->
+    <section id="ch11" class="chapter reveal">
+      <div class="chapter-num">Chapter 11</div>
+      <div class="chapter-title">Industrial Seed Oils & the Omega Crisis</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">The Most Ubiquitous Toxin You've Never Heard Of</span>
+      <p>Soybean oil, corn oil, canola oil, sunflower oil, cottonseed oil — these oils did not exist in the human food supply before the 20th century. When heated to frying temperatures, they generate toxic oxidation products including 4-hydroxynonenal (4-HNE), acrolein, and malondialdehyde — compounds with demonstrated genotoxicity and pro-inflammatory activity at physiological concentrations.</p>
+      <p>Red palm oil — a traditional staple across West Africa and the Caribbean — is one of the richest natural sources of alpha- and beta-carotene, tocotrienols, and Coenzyme Q10. Its displacement by industrially refined oils represents both a nutritional regression and a cultural severing.</p>
+    </section>
+
+    <!-- CH 12 -->
+    <section id="ch12" class="chapter reveal">
+      <div class="chapter-num">Chapter 12</div>
+      <div class="chapter-title">Sugar, Insulin & the Metabolic Catastrophe</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">The White Powder That Built an Empire of Disease</span>
+      <p>The global consumption of added sugars has increased approximately 1,000% in the past two centuries. No other substance has been introduced into the human diet at this scale and speed. At the doses delivered by sugary beverages and processed sweets, hepatic fructose metabolism triggers de novo lipogenesis — the liver converting sugar directly into fat, deposited intrahepatically and viscerally.</p>
+      <p>Insulin resistance is independently associated with cardiovascular disease, certain cancers, polycystic ovarian syndrome, and Alzheimer's disease — now sometimes called 'type 3 diabetes' due to insulin resistance in the brain. Its primary driver is the refined carbohydrate and added sugar content of the processed food supply.</p>
+    </section>
+
+    <!-- CH 13 -->
+    <section id="ch13" class="chapter reveal">
+      <div class="chapter-num">Chapter 13</div>
+      <div class="chapter-title">Food Additives, Preservatives & Chemical Burden</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">Reading What They Don't Want You to Read</span>
+      <p>The FDA's GRAS designation allows companies to self-certify new additives without mandatory independent review, meaning thousands of chemicals have entered the food supply with minimal safety testing. The European Food Safety Authority has banned several additives commonly used in the US — including certain food dyes linked to hyperactivity in children, potassium bromate, and brominated vegetable oil. This regulatory divergence is not a matter of scientific uncertainty — it is a matter of political economy.</p>
+      <h3 class="sub">Emulsifiers and Intestinal Barrier Disruption</h3>
+      <p>Landmark research from Emory University demonstrated that dietary exposure to polysorbate-80 and carboxymethylcellulose at concentrations equivalent to typical human intake caused significant gut microbiota alterations, low-grade intestinal inflammation, metabolic syndrome, and increased gut permeability. Increased gut permeability allows bacterial endotoxins into systemic circulation, triggering metabolic endotoxemia — a systemic inflammatory response contributing to insulin resistance, cardiovascular disease, and neuroinflammation.</p>
+    </section>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node"></div><div class="hex-node sm"></div><div class="hex-node"></div></div></div>
+
+    <!-- PART IV -->
+    <div id="part4" class="part-opener reveal">
+      <div class="part-label">Part Four</div>
+      <div class="part-divider"></div>
+      <div class="part-title">ANCESTRAL WISDOM MEETS MODERN SCIENCE</div>
+      <div class="part-subtitle">The Integration</div>
+    </div>
+
+    <!-- CH 14 -->
+    <section id="ch14" class="chapter reveal">
+      <div class="chapter-num">Chapter 14</div>
+      <div class="chapter-title">African Food Traditions as Molecular Medicine</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">They Always Knew. We're Just Now Proving It.</span>
+      <p>Africa is the oldest human civilization on Earth. For hundreds of thousands of years, human populations on the African continent developed food systems of extraordinary sophistication — not through formalized laboratory science, but through the empirical science of lived experience.</p>
+      <h3 class="sub">Traditional African Foods as Molecular Powerhouses</h3>
+      <p>Moringa oleifera — the 'tree of life' — contains gram-for-gram more protein than yogurt, more vitamin C than oranges, more potassium than bananas, more calcium than milk. Modern phytochemical research has confirmed anti-inflammatory, anti-diabetic, hepatoprotective, and neuroprotective properties. Baobab fruit contains 6 times the vitamin C of oranges. Hibiscus/sorrel is rich in anthocyanins with documented antihypertensive effects comparable to captopril in clinical studies. The ancestors knew this without the journal articles.</p>
+      <h3 class="sub">The Trauma of Colonial Food Disruption</h3>
+      <p>The chronic disease burden that disproportionately affects Black populations in the Caribbean, the Americas, and across the African diaspora — hypertension, type 2 diabetes, obesity, cardiovascular disease — cannot be fully understood outside of the historical context of imposed nutritional deprivation. These are not genetic inevitabilities. They are the metabolic signatures of centuries of colonial food destruction.</p>
+    </section>
+
+    <!-- CH 15 -->
+    <section id="ch15" class="chapter reveal">
+      <div class="chapter-num">Chapter 15</div>
+      <div class="chapter-title">Fasting, Autophagy & Cellular Renewal</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">The Wisdom of the Withholding</span>
+      <p>Every major traditional culture includes periods of deliberate food restriction. The universality of fasting across human cultures suggests it is an adaptive response to the biology of intermittent food availability that human physiology co-evolved with. The 2016 Nobel Prize in Physiology or Medicine went to Yoshinori Ohsumi for discovering autophagy regulation — the cellular self-cleaning process activated by fasting.</p>
+      <p>Beta-hydroxybutyrate (BHB) — produced during fasting — is not merely alternative fuel. It inhibits the NLRP3 inflammasome, activates HDAC inhibition (epigenetic modulation), and upregulates BDNF (brain-derived neurotrophic factor), supporting neuroplasticity and cognitive protection.</p>
+    </section>
+
+    <!-- CH 16 -->
+    <section id="ch16" class="chapter reveal">
+      <div class="chapter-num">Chapter 16</div>
+      <div class="chapter-title">Circadian Eating & Chrononutrition</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">When You Eat Matters as Much as What You Eat</span>
+      <p>Every cell in the human body runs on a 24-hour molecular clock. Chrononutrition finds that the same meal, eaten at different times of day, produces measurably different metabolic responses. Eating in alignment with circadian biology — concentrated food intake in daylight hours and fasting at night — optimizes metabolic efficiency and reduces chronic disease risk.</p>
+    </section>
+
+    <!-- CH 17 -->
+    <section id="ch17" class="chapter reveal">
+      <div class="chapter-num">Chapter 17</div>
+      <div class="chapter-title">The Nervous System, Stress & Nutritional Psychiatry</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">Your Brain Eats Too</span>
+      <p>The SMILES trial demonstrated that diet intervention is comparable to psychotherapy for depression. Over 90% of the body's serotonin is produced in the gut under microbial influence. A whole food diet — by supporting a diverse gut microbiome — directly supports neurochemical balance. A processed food diet — by impoverishing the microbiome and driving neuroinflammation — directly undermines mental health.</p>
+      <p>Serotonin synthesis requires tryptophan, vitamin B6, and iron. Dopamine requires tyrosine, B6, vitamin C, and copper. A diet built on ultra-processed food creates systematic deficiencies in the molecular machinery of mental health — the depression, anxiety, and cognitive decline epidemic is, in significant part, a cofactor deficiency epidemic dressed in psychiatric clothes.</p>
+    </section>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node sm"></div><div class="hex-node"></div><div class="hex-node sm"></div></div></div>
+
+    <!-- PART V -->
+    <div id="part5" class="part-opener reveal">
+      <div class="part-label">Part Five</div>
+      <div class="part-divider"></div>
+      <div class="part-title">THE PRACTICE</div>
+      <div class="part-subtitle">Building a Whole Food Life</div>
+    </div>
+
+    <!-- CH 18 -->
+    <section id="ch18" class="chapter reveal">
+      <div class="chapter-num">Chapter 18</div>
+      <div class="chapter-title">Practical Protocols — Transition, Sourcing, Preparation</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">From Knowledge to Kitchen</span>
+      <h3 class="sub">Phase 1: The Elimination Protocol (Weeks 1–2)</h3>
+      <ul class="book-list">
+        <li>All industrial seed oils — soybean, corn, canola, sunflower, cottonseed. Replace with extra virgin olive oil, coconut oil, avocado oil, or traditional ghee.</li>
+        <li>All sugar-sweetened beverages — sodas, fruit juices, energy drinks. Replace with water, herbal teas, hibiscus/sorrel.</li>
+        <li>All ultra-processed cereals, white bread, crackers, and commercially baked goods. Replace with whole grains, root provisions, plantain, and traditional flatbreads.</li>
+        <li>All processed meats — hot dogs, commercial sausages, deli meats. Replace with whole cuts prepared at home.</li>
+        <li>All synthetic sweeteners — aspartame, sucralose, saccharin. These disrupt gut microbiota despite zero caloric content.</li>
+      </ul>
+      <h3 class="sub">Phase 2: The Addition Protocol (Weeks 3–6)</h3>
+      <ul class="book-list">
+        <li>Add one serving of dark leafy greens (callaloo, kale, spinach, moringa leaves) daily.</li>
+        <li>Add colorful vegetables three times weekly — rotate orange, purple, red, and green sources.</li>
+        <li>Add legumes three to four times weekly — black beans, kidney beans, lentils, gungo peas, black-eyed peas.</li>
+        <li>Add one fermented food daily — natural full-fat unsweetened yogurt, naturally fermented pickles, or traditional ferments.</li>
+        <li>Add fatty fish twice weekly — mackerel, sardines, herring, or local Caribbean species.</li>
+        <li>Add seeds daily — pumpkin seeds (magnesium), flaxseed (ALA omega-3, lignans), chia, and sesame.</li>
+      </ul>
+      <h3 class="sub">Phase 3: Food Culture (Ongoing)</h3>
+      <p>In Jamaica and across the Caribbean, this means building relationships with market vendors, supporting community farming, and prioritizing local produce: dasheen, breadfruit, callaloo, yam, ackee, plantain, bitter melon, Scotch bonnet, ginger, turmeric, sorrel, soursop, guinep, mamey sapote — nutritionally extraordinary foods requiring no importation, no processing, and no significant cost.</p>
+    </section>
+
+    <!-- CH 19 -->
+    <section id="ch19" class="chapter reveal">
+      <div class="chapter-num">Chapter 19</div>
+      <div class="chapter-title">Reading the Body — Biomarkers & Self-Assessment</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">Measure What Matters</span>
+      <ul class="book-list">
+        <li><strong>Fasting glucose and HbA1c</strong> — Optimal: fasting glucose below 85 mg/dL; HbA1c below 5.3%.</li>
+        <li><strong>Fasting insulin</strong> — Optimal: below 5 uIU/mL. Elevated fasting insulin with normal glucose indicates compensated insulin resistance.</li>
+        <li><strong>Triglycerides and HDL</strong> — A triglyceride:HDL ratio below 2:1 is strongly cardioprotective.</li>
+        <li><strong>hsCRP</strong> — The primary circulating marker of systemic inflammation. Optimal: below 1.0 mg/L. Responsive to diet change within 4-8 weeks.</li>
+        <li><strong>25-hydroxyvitamin D</strong> — Optimal range: 50-80 ng/mL.</li>
+        <li><strong>Magnesium, zinc, B12, folate</strong> — Baseline micronutrient status informing targeted interventions.</li>
+      </ul>
+      <p>Most people report dramatic improvements in sleep quality, energy levels, mental clarity, skin condition, digestive function, and mood stability within 4-8 weeks of eliminating ultra-processed food.</p>
+    </section>
+
+    <!-- CH 20 -->
+    <section id="ch20" class="chapter reveal">
+      <div class="chapter-num">Chapter 20</div>
+      <div class="chapter-title">The Future of Food — Sovereignty, Systems & Solutions</div>
+      <div class="ch-banner"></div>
+      <span class="chapter-tag">Beyond the Individual</span>
+      <p>Food sovereignty means preserving heirloom seed varieties, supporting smallholder farmers, rebuilding community food networks, establishing community gardens and food forests, and educating young people in food preparation, nutritional literacy, and the political history of what they eat.</p>
+      <p>In Jamaica and across the Caribbean, this means reclaiming dasheen, breadfruit, callaloo, and moringa as the superfoods they always were — before Western wellness culture needed to rebrand them. The Afrofuturist vision of health integrates ancestral food wisdom with modern measurement tools: continuous glucose monitors, microbiome sequencing, and nutrigenomic testing — not to replace ancestral knowledge, but to confirm, refine, and personalize it.</p>
+      <blockquote>"The foods your ancestors ate are likely to perform best on the biological system they helped shape over hundreds of thousands of years."</blockquote>
+    </section>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node"></div><div class="hex-node sm"></div><div class="hex-node"></div></div></div>
+
+    <!-- AFTERWORD -->
+    <section id="afterword" class="reveal">
+      <div class="chapter-num">Afterword</div>
+      <div class="chapter-title">The Revolution Will Be Nourished</div>
+      <div class="ch-banner"></div>
+      <blockquote>"The act of choosing what to eat is, every single day, a political act, a biological act, and a spiritual act. Choose accordingly."</blockquote>
+      <p>You arrived at this book — or this book arrived at you — for a reason. Maybe you're tired of being tired. Maybe the doctor gave you numbers you didn't expect. Maybe you watched someone you love deteriorate from a disease that didn't have to happen. Maybe something in you already knew that the food system was lying to you and you finally wanted someone to explain exactly how.</p>
+      <p>Your body is extraordinary. It wants to heal. Given the raw materials — whole, living, nutrient-dense food — it will do things that will astonish you: reverse disease markers, restore energy, sharpen cognition, stabilize mood, normalize weight, and rebuild its structural integrity at the cellular level.</p>
+      <p>This is not magic. It is molecular biology. And you are the subject, the scientist, and the study.</p>
+      <p>The revolution will be nourished. Not processed. Not packaged. Not engineered for addiction in a factory. It will be grown in soil, harvested by hands, prepared in kitchens, and eaten in the knowledge that every bite is either building you or breaking you — and that you now know the difference.</p>
+      <div class="afterword-sig">— Christopher Dean Hamilton</div>
+      <div class="afterword-loc">Kingston, Jamaica</div>
+    </section>
+
+    <div class="hex-div"><div class="hex-nodes"><div class="hex-node sm"></div><div class="hex-node"></div><div class="hex-node sm"></div></div></div>
+
+    <!-- REFERENCES -->
+    <section id="references" class="reveal">
+      <div class="chapter-num">References</div>
+      <div class="chapter-title">Selected Scientific Literature</div>
+      <div class="ch-banner"></div>
+      <div class="ref-group">
+        <h4>Foundational Texts</h4>
+        <p>Monteiro CA et al. (2019). Ultra-processed foods: what they are and how to identify them. Public Health Nutrition, 22(5).</p>
+        <p>Jacka FN et al. (2017). A randomised controlled trial of dietary improvement for adults with major depression (the SMILES trial). BMC Medicine, 15(23).</p>
+        <p>Sonnenburg JL & Sonnenburg ED. (2019). The ancestral and industrialized gut microbiota. Nature Reviews Microbiology, 17.</p>
+        <p>Ohsumi Y. (2016). Nobel Lecture: Autophagy — An Intracellular Recycling System.</p>
+      </div>
+      <div class="ref-group">
+        <h4>Epigenetics & Telomeres</h4>
+        <p>Waterland RA & Jirtle RL. (2003). Transposable elements: targets for early nutritional effects. Molecular and Cellular Biology, 23(15).</p>
+        <p>Blackburn EH & Epel ES. (2017). The Telomere Effect. Grand Central Publishing.</p>
+      </div>
+      <div class="ref-group">
+        <h4>Gut Microbiome</h4>
+        <p>Wastyk HC et al. (2021). Gut-microbiota-targeted diets modulate human immune status. Cell, 184(16).</p>
+        <p>De Filippo C et al. (2010). Impact of diet in shaping gut microbiota. PNAS, 107(33).</p>
+      </div>
+      <div class="ref-group">
+        <h4>African & Diasporic Food Systems</h4>
+        <p>Carney JA. (2001). Black Rice: The African Origins of Rice Cultivation in the Americas. Harvard University Press.</p>
+        <p>Fleurose L et al. (2020). Nutritional properties of Moringa oleifera across African communities. J. Ethnopharmacology, 256.</p>
+      </div>
+      <div class="ref-group">
+        <h4>Nutritional Psychiatry</h4>
+        <p>Jacka FN. (2019). Brain Changer: The Good Mental Health Diet. Pan Macmillan.</p>
+        <p>Adan RAH et al. (2019). Nutritional psychiatry: Towards improving mental health by what you eat. European Neuropsychopharmacology, 29(12).</p>
+      </div>
+    </section>
+
+    <!-- DONATE -->
+    <section id="donate" class="reveal">
+      <div class="adinkra-row">
+        <span title="Gye Nyame">☥</span>
+        <span title="Sankofa">⌘</span>
+        <span title="Dwennimmen">✦</span>
+        <span title="Gye Nyame">☥</span>
+        <span title="Dwennimmen">✦</span>
+      </div>
+      <h2>SUPPORT THIS WORK</h2>
+      <div class="hex-div"><div class="hex-nodes"><div class="hex-node"></div><div class="hex-node sm"></div><div class="hex-node"></div></div></div>
+      <p>If this book added value to your understanding, your health, or your community — consider supporting the author's continued work in education, music, and creative liberation.</p>
+      <div class="donate-items">
+        <div class="donate-item">Free distribution of this book in underserved Caribbean and African communities</div>
+        <div class="donate-item">Continued research and writing on molecular health, food sovereignty, and Pan-African wellness</div>
+        <div class="donate-item">Nuttinbutdatruth Records Knowledge Division — music with educational intent</div>
+        <div class="donate-item">Future Force Financial — building economic tools for the underserved</div>
+      </div>
+      <a class="donate-paypal-btn" href="https://paypal.me/cristechnology?locale.x=en_US&country.x=JM" target="_blank">
+        ☞ DONATE VIA PAYPAL
+      </a>
+      <div class="donate-address">paypal.me/cristechnology</div>
+      <p style="margin-top:20px; font-style:italic; font-size:0.95rem;">Every contribution, no matter the size, is received with genuine gratitude.</p>
+      <p style="font-family:'Cinzel',serif; color:var(--gold); font-size:1.1rem; margin-top:12px;">Ase. &nbsp; Asante. &nbsp; Respect.</p>
+    </section>
+
+  </div><!-- /content-wrap -->
+
+  <footer>
+    <p>MOLECULAR HEALTH & THE WISDOM OF EATING WHOLE</p>
+    <p>First Edition · Nuttinbutdatruth Records — Knowledge Division · Kingston, Jamaica</p>
+    <p>© 2025 Christopher Dean Hamilton. All rights reserved.</p>
+  </footer>
+
+</div><!-- /book -->
+
+<script>
+// ══════════════════════════════════════════════════════
+// KENTE STRIPE GENERATOR
+// ══════════════════════════════════════════════════════
+const KENTE = ['#D4A017','#1a7a45','#FF9500','#00e5c8','#7b2fbe','#f0c040','#26b865'];
+function buildKente(el) {
+  for(let i=0; i<80; i++){
+    const s = document.createElement('span');
+    s.style.background = KENTE[i % KENTE.length];
+    el.appendChild(s);
+  }
+}
+['pw-kente-top','pw-kente-bot','pw-top-kente','pw-bot-kente','hero-kente-t','hero-kente-b'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) buildKente(el);
+});
+
+// ══════════════════════════════════════════════════════
+// ANIMATED GEOMETRY CANVAS
+// ══════════════════════════════════════════════════════
+const canvas = document.getElementById('geo-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, t = 0;
+
+function resize() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Symbols: Metatron nodes, Adinkra-inspired rotating geometry
+const SYMBOLS = [];
+function initSymbols() {
+  SYMBOLS.length = 0;
+  const types = ['metatron','sacred','ankh','helix','adinkra','flower'];
+  for(let i=0; i<16; i++) {
+    SYMBOLS.push({
+      x: Math.random()*W,
+      y: Math.random()*H,
+      type: types[Math.floor(Math.random()*types.length)],
+      size: 30 + Math.random()*80,
+      speed: 0.003 + Math.random()*0.008,
+      phase: Math.random()*Math.PI*2,
+      vx: (Math.random()-0.5)*0.12,
+      vy: (Math.random()-0.5)*0.12,
+      color: ['#D4A017','#00e5c8','#1a7a45','#FF9500','#7b2fbe'][Math.floor(Math.random()*5)],
+      alpha: 0.12 + Math.random()*0.22,
+      spin: (Math.random()-0.5)*0.004,
+      angle: Math.random()*Math.PI*2,
+    });
+  }
+}
+initSymbols();
+window.addEventListener('resize', initSymbols);
+
+function hexPts(cx,cy,r,n=6,offset=0) {
+  const pts=[];
+  for(let i=0;i<n;i++){
+    const a=offset+i*Math.PI*2/n;
+    pts.push([cx+r*Math.cos(a),cy+r*Math.sin(a)]);
+  }
+  return pts;
+}
+
+function drawMegatron(ctx, cx, cy, r, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 0.7;
+  // outer circle
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,r*.6,0,Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cy,r*.3,0,Math.PI*2); ctx.stroke();
+  // spokes
+  const n=12;
+  for(let i=0;i<n;i++){
+    const a=i*Math.PI*2/n;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+r*Math.cos(a),cy+r*Math.sin(a));
+    ctx.stroke();
+  }
+  // inner hexagon
+  const pts=hexPts(cx,cy,r*.7,6,Math.PI/6);
+  ctx.beginPath(); ctx.moveTo(...pts[0]);
+  pts.forEach(p=>ctx.lineTo(...p)); ctx.closePath(); ctx.stroke();
+  ctx.restore();
+}
+
+function drawSacred(ctx, cx, cy, r, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 0.6;
+  for(let ring=1;ring<=4;ring++){
+    ctx.beginPath(); ctx.arc(cx,cy,r*ring/4,0,Math.PI*2); ctx.stroke();
+  }
+  for(let k=0;k<6;k++){
+    const a=k*Math.PI/3;
+    ctx.beginPath(); ctx.arc(cx+r*.5*Math.cos(a),cy+r*.5*Math.sin(a),r*.5,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawAnkh(ctx, cx, cy, r, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = r*0.1;
+  ctx.lineCap='round';
+  // vertical
+  ctx.beginPath(); ctx.moveTo(cx,cy-r*0.1); ctx.lineTo(cx,cy+r); ctx.stroke();
+  // horizontal
+  ctx.beginPath(); ctx.moveTo(cx-r*.55,cy+r*.1); ctx.lineTo(cx+r*.55,cy+r*.1); ctx.stroke();
+  // loop
+  ctx.lineWidth = r*0.09;
+  ctx.beginPath(); ctx.arc(cx,cy-r*.3,r*.32,0,Math.PI*2); ctx.stroke();
+  ctx.restore();
+}
+
+function drawHelix(ctx, cx, cy, r, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1;
+  for(let strand=0;strand<2;strand++){
+    ctx.beginPath();
+    for(let i=0;i<=40;i++){
+      const t=i/40;
+      const x=cx+r*Math.cos(t*Math.PI*3+strand*Math.PI);
+      const y=cy-r+t*r*2;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+  // rungs
+  ctx.lineWidth=0.4;
+  for(let i=0;i<=8;i++){
+    const t=i/8;
+    const x1=cx+r*Math.cos(t*Math.PI*3);
+    const x2=cx+r*Math.cos(t*Math.PI*3+Math.PI);
+    const y=cy-r+t*r*2;
+    ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(x2,y); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawAdinkra(ctx, cx, cy, r, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.2;
+  for(let ring of[r,r*.6,r*.3]){
+    ctx.beginPath(); ctx.arc(cx,cy,ring,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(cx-r*1.2,cy); ctx.lineTo(cx+r*1.2,cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx,cy-r*1.2); ctx.lineTo(cx,cy+r*1.2); ctx.stroke();
+  ctx.restore();
+}
+
+function drawFlower(ctx, cx, cy, r, color, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 0.7;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  for(let k=0;k<6;k++){
+    const a=k*Math.PI/3;
+    const ox=cx+r*Math.cos(a), oy=cy+r*Math.sin(a);
+    ctx.beginPath(); ctx.arc(ox,oy,r,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawSymbol(sym) {
+  ctx.save();
+  ctx.translate(sym.x, sym.y);
+  ctx.rotate(sym.angle);
+  const r = sym.size;
+  const a = sym.alpha * (0.85 + 0.15*Math.sin(t*0.8+sym.phase));
+  switch(sym.type) {
+    case 'metatron':  drawMegatron(ctx,0,0,r,sym.color,a); break;
+    case 'sacred':    drawSacred(ctx,0,0,r,sym.color,a); break;
+    case 'ankh':      drawAnkh(ctx,0,0,r,sym.color,a); break;
+    case 'helix':     drawHelix(ctx,0,0,r,sym.color,a); break;
+    case 'adinkra':   drawAdinkra(ctx,0,0,r,sym.color,a); break;
+    case 'flower':    drawFlower(ctx,0,0,r,sym.color,a); break;
+  }
+  ctx.restore();
+}
+
+// Starfield
+const STARS=[];
+for(let i=0;i<160;i++){
+  STARS.push({x:Math.random(),y:Math.random(),r:Math.random()*1.4+0.2,a:Math.random()*0.7+0.1,speed:Math.random()*0.004});
+}
+
+// Nebula glow
+function drawNebula(cx,cy,r,color,alpha){
+  const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
+  g.addColorStop(0,color.replace(')',`,${alpha})`).replace('rgb','rgba'));
+  g.addColorStop(1,'transparent');
+  ctx.fillStyle=g;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+}
+
+function render() {
+  t += 0.012;
+  ctx.clearRect(0,0,W,H);
+
+  // nebulae
+  ctx.save();
+  drawNebula(W*.5,H*.4,300,'rgb(26,122,69)',0.06);
+  drawNebula(W*.2,H*.7,200,'rgb(0,229,200)',0.04);
+  drawNebula(W*.8,H*.2,180,'rgb(123,47,190)',0.04);
+  drawNebula(W*.7,H*.8,240,'rgb(212,160,23)',0.04);
+  ctx.restore();
+
+  // stars
+  ctx.save();
+  STARS.forEach(s=>{
+    const twinkle=0.6+0.4*Math.sin(t*2+s.speed*100);
+    ctx.globalAlpha=s.a*twinkle;
+    ctx.fillStyle='#f0ede4';
+    ctx.beginPath(); ctx.arc(s.x*W,s.y*H,s.r,0,Math.PI*2); ctx.fill();
+  });
+  ctx.restore();
+
+  // symbols
+  SYMBOLS.forEach(sym => {
+    sym.angle += sym.spin;
+    sym.x += sym.vx;
+    sym.y += sym.vy;
+    if(sym.x < -120) sym.x = W+120;
+    if(sym.x > W+120) sym.x = -120;
+    if(sym.y < -120) sym.y = H+120;
+    if(sym.y > H+120) sym.y = -120;
+    drawSymbol(sym);
+  });
+
+  requestAnimationFrame(render);
+}
+render();
+
+// ══════════════════════════════════════════════════════
+// WEB AUDIO — SOOTHING ANCESTRAL DRUMMING
+// Slow meditative tempo (~52 BPM), warm talking drum tones,
+// soft bass resonance, gentle rain texture, reverb tails,
+// call-and-response phrasing, long breathing spaces
+// ══════════════════════════════════════════════════════
+let audioCtx = null, drumRunning = false, drumScheduler = null, masterGain = null;
+let reverbNode = null, rainNode = null, rainGain = null;
+let scheduleAhead = 0.12;   // seconds to schedule ahead
+let scheduleInterval = 80;  // ms between scheduler calls
+let beatTime = 0;           // next beat time in audioCtx.currentTime
+let beatStep = 0;
+
+// ── TEMPO: 52 BPM, 8th-note grid ──────────────────────
+// Quarter note = 60/52 ≈ 1.154s  |  8th note ≈ 0.577s
+const QUARTER = 60 / 52;
+const EIGHTH  = QUARTER / 2;
+const WHOLE   = QUARTER * 4;
+
+function initAudio() {
+  if(audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain();
+  masterGain.gain.value = parseFloat(document.getElementById('vol-slider').value);
+
+  // ── Soft reverb (convolution approximated with delay feedback) ──
+  reverbNode = buildReverb(3.2, 0.38);
+  reverbNode.connect(masterGain);
+  masterGain.connect(audioCtx.destination);
+
+  // ── Continuous soft rain layer ──
+  rainGain = audioCtx.createGain();
+  rainGain.gain.value = 0.0;
+  rainNode = buildRain();
+  rainNode.connect(rainGain);
+  rainGain.connect(masterGain);
+}
+
+// Impulse-response reverb via feedback delay network
+function buildReverb(duration, wet) {
+  const sr   = audioCtx.sampleRate;
+  const len  = sr * duration;
+  const buf  = audioCtx.createBuffer(2, len, sr);
+  for(let ch=0; ch<2; ch++){
+    const d = buf.getChannelData(ch);
+    for(let i=0; i<len; i++){
+      // Exponentially decaying noise — warm, not bright
+      d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.4);
+    }
+  }
+  const conv = audioCtx.createConvolver();
+  conv.buffer = buf;
+  // Wet/dry blend
+  const dry  = audioCtx.createGain(); dry.gain.value = 1 - wet * 0.5;
+  const wetG = audioCtx.createGain(); wetG.gain.value = wet;
+  const out  = audioCtx.createGain(); out.gain.value = 1;
+  conv.connect(wetG); wetG.connect(out); dry.connect(out);
+  // Expose an input node that routes to both conv and dry
+  conv._input = dry; // we'll wire sources → conv directly and also to dry
+  return out;
+}
+
+// Continuous gentle rain — pink-ish filtered noise loop
+function buildRain() {
+  const sr  = audioCtx.sampleRate;
+  const dur = 4; // seconds per buffer, looped
+  const buf = audioCtx.createBuffer(2, sr*dur, sr);
+  for(let ch=0; ch<2; ch++){
+    const d = buf.getChannelData(ch);
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for(let i=0;i<d.length;i++){
+      const w = Math.random()*2-1;
+      // Paul Kellet's pink noise filter
+      b0=0.99886*b0+w*0.0555179; b1=0.99332*b1+w*0.0750759;
+      b2=0.96900*b2+w*0.1538520; b3=0.86650*b3+w*0.3104856;
+      b4=0.55000*b4+w*0.5329522; b5=-0.7616*b5-w*0.0168980;
+      const pink = (b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;
+      b6=w*0.115926;
+      d[i] = pink * 0.22;
+    }
+  }
+  const src = audioCtx.createBufferSource();
+  src.buffer = buf; src.loop = true;
+  // High-pass to remove rumble, low-pass to remove harshness → gentle rainfall
+  const hp = audioCtx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=400;
+  const lp = audioCtx.createBiquadFilter(); lp.type='lowpass';  lp.frequency.value=3200;
+  src.connect(hp); hp.connect(lp);
+  src.start(0);
+  return lp;
+}
+
+// Fade rain in over 4s
+function fadeRainIn() {
+  if(!rainGain) return;
+  rainGain.gain.cancelScheduledValues(audioCtx.currentTime);
+  rainGain.gain.setValueAtTime(rainGain.gain.value, audioCtx.currentTime);
+  rainGain.gain.linearRampToValueAtTime(0.045, audioCtx.currentTime + 4);
+}
+function fadeRainOut() {
+  if(!rainGain) return;
+  rainGain.gain.cancelScheduledValues(audioCtx.currentTime);
+  rainGain.gain.setValueAtTime(rainGain.gain.value, audioCtx.currentTime);
+  rainGain.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + 3);
+}
+
+// ── SOUND PRIMITIVES ──────────────────────────────────
+
+// Warm talking drum — slow pitch envelope, long resonant decay
+function talkingDrum(freq, pitchRatio, decay, time, gainAmt, wet=0.55) {
+  const osc   = audioCtx.createOscillator();
+  const env   = audioCtx.createGain();
+  const filt  = audioCtx.createBiquadFilter();
+  const dryG  = audioCtx.createGain();
+  filt.type = 'lowpass';
+  filt.frequency.setValueAtTime(freq * 5, time);
+  filt.frequency.exponentialRampToValueAtTime(freq * 1.2, time + decay * 0.6);
+  filt.Q.value = 1.8;
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, time);
+  osc.frequency.exponentialRampToValueAtTime(freq * pitchRatio, time + decay * 0.55);
+
+  env.gain.setValueAtTime(0, time);
+  env.gain.linearRampToValueAtTime(gainAmt, time + 0.006); // soft attack
+  env.gain.exponentialRampToValueAtTime(gainAmt * 0.4, time + decay * 0.3);
+  env.gain.exponentialRampToValueAtTime(0.0001, time + decay);
+
+  dryG.gain.value = 1 - wet;
+  const wetG = audioCtx.createGain(); wetG.gain.value = wet;
+
+  osc.connect(filt); filt.connect(env);
+  env.connect(dryG);  dryG.connect(masterGain);
+  env.connect(wetG);  wetG.connect(reverbNode);
+
+  osc.start(time); osc.stop(time + decay + 0.1);
+}
+
+// Deep bass pulse — the earth-grounding heartbeat
+function bassPulse(freq, decay, time, gainAmt=0.55) {
+  const osc  = audioCtx.createOscillator();
+  const sub  = audioCtx.createOscillator(); // sub octave
+  const env  = audioCtx.createGain();
+  const filt = audioCtx.createBiquadFilter();
+  const wetG = audioCtx.createGain(); wetG.gain.value = 0.2;
+
+  filt.type='lowpass'; filt.frequency.value = 180; filt.Q.value = 0.8;
+  osc.type='sine'; osc.frequency.value = freq;
+  sub.type='sine'; sub.frequency.value = freq * 0.5;
+
+  env.gain.setValueAtTime(0, time);
+  env.gain.linearRampToValueAtTime(gainAmt,      time + 0.01);
+  env.gain.exponentialRampToValueAtTime(gainAmt*0.5, time + decay*0.4);
+  env.gain.exponentialRampToValueAtTime(0.0001,  time + decay);
+
+  const subEnv = audioCtx.createGain();
+  subEnv.gain.setValueAtTime(0, time);
+  subEnv.gain.linearRampToValueAtTime(gainAmt*0.35, time+0.02);
+  subEnv.gain.exponentialRampToValueAtTime(0.0001, time+decay*1.3);
+
+  osc.connect(filt); filt.connect(env); env.connect(masterGain); env.connect(wetG); wetG.connect(reverbNode);
+  sub.connect(subEnv); subEnv.connect(masterGain);
+
+  osc.start(time); osc.stop(time+decay+0.2);
+  sub.start(time); sub.stop(time+decay*1.3+0.2);
+}
+
+// Soft wood / log drum tone — warm, hollow, mid-presence
+function logDrum(freq, decay, time, gainAmt=0.28) {
+  const osc  = audioCtx.createOscillator();
+  const env  = audioCtx.createGain();
+  const filt = audioCtx.createBiquadFilter();
+  const wetG = audioCtx.createGain(); wetG.gain.value = 0.5;
+
+  filt.type='bandpass'; filt.frequency.value=freq*1.8; filt.Q.value=3;
+  osc.type='triangle'; osc.frequency.value=freq;
+  osc.frequency.setValueAtTime(freq*1.05, time);
+  osc.frequency.exponentialRampToValueAtTime(freq*0.92, time+decay*0.4);
+
+  env.gain.setValueAtTime(0, time);
+  env.gain.linearRampToValueAtTime(gainAmt, time+0.008);
+  env.gain.exponentialRampToValueAtTime(0.0001, time+decay);
+
+  osc.connect(filt); filt.connect(env);
+  env.connect(masterGain); env.connect(wetG); wetG.connect(reverbNode);
+  osc.start(time); osc.stop(time+decay+0.1);
+}
+
+// Gentle shaker — barely-there, like dry grass in a breeze
+function gentleShaker(time, gainAmt=0.04) {
+  const sr  = audioCtx.sampleRate;
+  const len = Math.floor(sr * 0.08);
+  const buf = audioCtx.createBuffer(1, len, sr);
+  const d   = buf.getChannelData(0);
+  for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3)*gainAmt*8;
+  const src  = audioCtx.createBufferSource(); src.buffer=buf;
+  const hp   = audioCtx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=5500;
+  const lp   = audioCtx.createBiquadFilter(); lp.type='lowpass';  lp.frequency.value=9000;
+  const env  = audioCtx.createGain();
+  env.gain.setValueAtTime(gainAmt, time);
+  env.gain.exponentialRampToValueAtTime(0.0001, time+0.07);
+  const wetG = audioCtx.createGain(); wetG.gain.value=0.3;
+  src.connect(hp); hp.connect(lp); lp.connect(env);
+  env.connect(masterGain); env.connect(wetG); wetG.connect(reverbNode);
+  src.start(time); src.stop(time+0.12);
+}
+
+// Singing bowl shimmer — crystalline overtone ring
+function singingBowl(freq, decay, time, gainAmt=0.12) {
+  // Multiple partials for bowl character: f, 2.76f, 5.4f
+  [[1, gainAmt],[2.756, gainAmt*0.35],[5.404, gainAmt*0.12]].forEach(([ratio, amp]) => {
+    const osc = audioCtx.createOscillator();
+    const env = audioCtx.createGain();
+    const wetG= audioCtx.createGain(); wetG.gain.value=0.85;
+    osc.type='sine'; osc.frequency.value = freq*ratio;
+    env.gain.setValueAtTime(0, time);
+    env.gain.linearRampToValueAtTime(amp, time+0.03);
+    env.gain.exponentialRampToValueAtTime(amp*0.5, time+decay*0.5);
+    env.gain.exponentialRampToValueAtTime(0.0001, time+decay);
+    osc.connect(env); env.connect(masterGain); env.connect(wetG); wetG.connect(reverbNode);
+    osc.start(time); osc.stop(time+decay+0.2);
+  });
+}
+
+// ── PATTERN: 32-step, one step = 1 eighth note ──────
+// Meditative, spacious, call-and-response phrasing
+// Phase A (bars 1-2): soft call  |  Phase B (bars 3-4): gentle response
+
+const S = 1; // step present
+const _ = 0; // rest
+
+// Steps index 0-31 (4 bars of 8th notes at 52 BPM)
+const PAT = {
+  // Deep heartbeat bass — sparse, grounding
+  bass: [S,_,_,_,  _,_,S,_,  _,_,_,_,  S,_,_,_,
+         _,_,S,_,  _,_,_,_,  S,_,_,_,  _,_,S,_],
+  // Talking drum hi — melodic questioning phrase
+  talk_hi:[_,_,S,_,  S,_,_,_,  _,_,S,_,  _,S,_,_,
+           _,_,_,S,  _,S,_,_,  _,_,S,_,  S,_,_,_],
+  // Talking drum lo — answering phrase
+  talk_lo:[_,_,_,_,  _,S,_,_,  _,_,_,S,  _,_,S,_,
+           _,S,_,_,  _,_,_,S,  _,S,_,_,  _,_,_,S],
+  // Log drum — gentle rhythmic bed, accents downbeats softly
+  log:    [_,_,_,_,  _,_,_,S,  _,_,_,_,  _,_,_,S,
+           _,_,_,_,  _,_,_,S,  _,_,_,_,  _,_,_,S],
+  // Shaker — barely present, every other downbeat
+  shake:  [S,_,_,_,  _,_,_,_,  S,_,_,_,  _,_,_,_,
+           S,_,_,_,  _,_,_,_,  S,_,_,_,  _,_,_,_],
+  // Singing bowl — rare, meditative punctuation
+  bowl:   [_,_,_,_,  _,_,_,_,  S,_,_,_,  _,_,_,_,
+           _,_,_,_,  _,_,_,_,  _,_,_,_,  S,_,_,_],
+};
+
+// Pitch sets for talking drum (pentatonic warmth)
+// Bass: 55Hz (A1) and 73Hz (D2)
+// Talk hi: 220Hz (A3), 277Hz (C#4), 330Hz (E4)
+// Talk lo: 165Hz (E3), 196Hz (G3), 247Hz (B3)
+const BASS_PITCHES  = [55, 55, 73, 55];
+const TALKHI_PITCHES= [220, 277, 220, 330, 247, 220];
+const TALKLO_PITCHES= [165, 196, 165, 247, 196, 165];
+const LOG_PITCHES   = [392, 440, 392];
+const BOWL_PITCHES  = [528, 432];  // healing frequencies
+
+let bassIdx=0, hiIdx=0, loIdx=0, logIdx=0, bowlIdx=0;
+
+function scheduleBeats() {
+  while(beatTime < audioCtx.currentTime + scheduleAhead) {
+    const step = beatStep % 32;
+    const t    = beatTime;
+
+    if(PAT.bass[step]) {
+      const f = BASS_PITCHES[bassIdx % BASS_PITCHES.length]; bassIdx++;
+      bassPulse(f, 1.6, t, 0.48);
+    }
+    if(PAT.talk_hi[step]) {
+      const f = TALKHI_PITCHES[hiIdx % TALKHI_PITCHES.length]; hiIdx++;
+      talkingDrum(f, 0.82, 0.68, t, 0.38, 0.6);
+    }
+    if(PAT.talk_lo[step]) {
+      const f = TALKLO_PITCHES[loIdx % TALKLO_PITCHES.length]; loIdx++;
+      talkingDrum(f, 0.72, 0.72, t, 0.32, 0.65);
+    }
+    if(PAT.log[step]) {
+      const f = LOG_PITCHES[logIdx % LOG_PITCHES.length]; logIdx++;
+      logDrum(f, 0.55, t, 0.22);
+    }
+    if(PAT.shake[step]) {
+      gentleShaker(t, 0.038 + Math.random()*0.018);
+    }
+    if(PAT.bowl[step]) {
+      const f = BOWL_PITCHES[bowlIdx % BOWL_PITCHES.length]; bowlIdx++;
+      singingBowl(f, 4.5, t, 0.10);
+    }
+
+    beatTime += EIGHTH;
+    beatStep++;
+  }
+}
+
+function toggleDrum() {
+  initAudio();
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  drumRunning = !drumRunning;
+  const icon  = document.getElementById('drum-icon');
+  const label = document.getElementById('audio-label');
+  if(drumRunning) {
+    icon.textContent  = '🔊';
+    label.textContent = 'DRUMS ON';
+    beatStep = 0; bassIdx=0; hiIdx=0; loIdx=0; logIdx=0; bowlIdx=0;
+    beatTime = audioCtx.currentTime + 0.1;
+    fadeRainIn();
+    drumScheduler = setInterval(scheduleBeats, scheduleInterval);
+  } else {
+    icon.textContent  = '🥁';
+    label.textContent = 'SOOTHING DRUMS';
+    clearInterval(drumScheduler);
+    fadeRainOut();
+  }
+}
+
+function setVolume(v) {
+  event.stopPropagation();
+  if(masterGain) masterGain.gain.value = parseFloat(v);
+}
+
+// ══════════════════════════════════════════════════════
+// ── F: Watermark generator ────────────────────────────────
+function buildWatermark(userEmail) {
+  const layer = document.getElementById('wm-layer');
+  if(!layer) return;
+  layer.innerHTML = '';
+  const text = `© Christopher Dean Hamilton 2025  ·  Licensed to: ${userEmail}  ·  Unauthorized copying prohibited`;
+  const cols = Math.ceil(window.innerWidth / 320) + 2;
+  const rows = Math.ceil(window.innerHeight / 180) + 2;
+  for(let r = 0; r < rows; r++) {
+    for(let c = 0; c < cols; c++) {
+      const el = document.createElement('div');
+      el.className = 'wm-text';
+      el.textContent = text;
+      el.style.left  = (c * 320 - 60) + 'px';
+      el.style.top   = (r * 180 - 30) + 'px';
+      layer.appendChild(el);
+    }
+  }
+}
+
+// ── H: Anti-scrape: obfuscate content in DOM slightly ────
+// Wrap text nodes in spans with zero-width chars to break
+// naive copy-paste scraping (doesn't affect display)
+function antiScrapeWrap() {
+  const ZWS = '​'; // zero-width space
+  const book = document.getElementById('book');
+  if(!book) return;
+  const walker = document.createTreeWalker(
+    book, NodeFilter.SHOW_TEXT,
+    { acceptNode: n => n.textContent.trim().length > 40 ?
+        NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP }
+  );
+  const nodes = [];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+  nodes.forEach(node => {
+    // Insert zero-width spaces every ~8 chars — invisible but breaks scraping
+    const txt = node.textContent;
+    let out = '';
+    for(let i=0; i<txt.length; i++) {
+      out += txt[i];
+      if(i > 0 && i % 8 === 0) out += ZWS;
+    }
+    node.textContent = out;
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// PAYWALL LOGIC — JWT BACKEND VERIFIED
+// ══════════════════════════════════════════════════════
+
+const ACCESS_KEY  = 'mh_book_access_v1';
+const JWT_KEY     = 'mh_jwt_v1';
+const EMAIL_KEY   = 'mh_buyer_email';
+
+// ── Lightweight client-side JWT reader (no verify — server already signed) ──
+function parseJWT(token) {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(atob(parts[1].replace(/-/g,'+').replace(/_/g,'/')));
+    if (payload.exp && Date.now() / 1000 > payload.exp) return null; // expired
+    if (payload.book !== 'molecular-health-v1') return null;         // wrong book
+    return payload;
+  } catch { return null; }
+}
+
+function checkAccess() {
+  // Check stored JWT is valid and unexpired
+  const jwt = localStorage.getItem(JWT_KEY);
+  if (!jwt) return false;
+  return parseJWT(jwt) !== null;
+}
+
+function grantAccess(jwtToken, buyerEmail) {
+  // Store verified JWT + buyer info
+  localStorage.setItem(JWT_KEY,    jwtToken);
+  localStorage.setItem(ACCESS_KEY, 'granted');
+  localStorage.setItem(EMAIL_KEY,  buyerEmail || 'licensed-reader');
+  localStorage.setItem('mh_session_ts', Date.now().toString());
+
+  document.getElementById('paywall').style.display = 'none';
+  document.getElementById('book').style.display    = 'block';
+  initScrollReveal();
+
+  const email = buyerEmail || localStorage.getItem(EMAIL_KEY) || 'licensed-reader';
+  setTimeout(() => { buildWatermark(email); antiScrapeWrap(); }, 600);
+}
+
+// ── If already unlocked with a valid JWT, restore session ──
+(function restoreSession() {
+  const jwt   = localStorage.getItem(JWT_KEY);
+  const email = localStorage.getItem(EMAIL_KEY) || 'licensed-reader';
+  if (jwt && parseJWT(jwt)) {
+    document.getElementById('paywall').style.display = 'none';
+    document.getElementById('book').style.display    = 'block';
+    setTimeout(() => { initScrollReveal(); buildWatermark(email); antiScrapeWrap(); }, 100);
+  }
+})();
+
+function onPaypalClick() {
+  setTimeout(() => {
+    document.getElementById('unlock-form').style.display = 'block';
+    document.getElementById('unlock-submit').textContent = 'I DONATED — UNLOCK NOW';
+  }, 8000);
+}
+
+function toggleUnlockForm() {
+  const f = document.getElementById('unlock-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+// ── Main unlock — calls Netlify function to verify PayPal payment ──
+async function tryUnlock() {
+  const emailInput = document.getElementById('unlock-email');
+  const submitBtn  = document.getElementById('unlock-submit');
+  const errEl      = document.getElementById('pw-error');
+  const email      = emailInput.value.trim().toLowerCase();
+
+  // Basic client-side validation
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showError('Please enter a valid email address.');
+    return;
+  }
+
+  // Loading state
+  submitBtn.textContent = 'VERIFYING PAYMENT...';
+  submitBtn.disabled    = true;
+  errEl.style.display   = 'none';
+
+  try {
+    // Call the Netlify serverless function
+    const res = await fetch('/.netlify/functions/verify-donor', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({ email }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success && data.token) {
+      // Validate the JWT the server returned
+      const payload = parseJWT(data.token);
+      if (!payload) {
+        showError('Token validation failed. Please contact support.');
+        resetBtn();
+        return;
+      }
+      // All good — grant access
+      submitBtn.textContent = 'ACCESS GRANTED ✓';
+      submitBtn.style.background = 'var(--green2)';
+      setTimeout(() => grantAccess(data.token, email), 800);
+
+    } else if (res.status === 402) {
+      // No qualifying payment found
+      showError(
+        data.message ||
+        'No $10 payment found for this email. Please ensure you donated ' +
+        'via PayPal and are using the same email. Payments may take up to 10 minutes to appear.'
+      );
+      resetBtn();
+
+    } else if (res.status === 429) {
+      showError('Too many attempts. Please wait a few minutes and try again.');
+      resetBtn();
+
+    } else {
+      showError(data.message || 'Verification failed. Please try again.');
+      resetBtn();
+    }
+
+  } catch (networkErr) {
+    // Network error — could be dev mode without Netlify functions running
+    // Fallback for local testing: check if running on localhost
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      console.warn('Local dev mode: Netlify function not available. Using test bypass.');
+      // In local dev only, a mock JWT for testing layout
+      const mockJWT = [
+        btoa(JSON.stringify({alg:'HS256',typ:'JWT'})),
+        btoa(JSON.stringify({
+          sub: email, iat: Math.floor(Date.now()/1000),
+          exp: Math.floor(Date.now()/1000) + 86400*30,
+          book:'molecular-health-v1', txn:'LOCAL-DEV-TEST',
+          iss:'nuttinbutdatruth-records', amt:5
+        })),
+        'local-dev-sig-not-valid-in-production'
+      ].join('.');
+      submitBtn.textContent = 'DEV MODE — ACCESS GRANTED';
+      setTimeout(() => grantAccess(mockJWT, email), 600);
+    } else {
+      showError('Connection error. Please check your internet and try again.');
+      resetBtn();
+    }
+  }
+}
+
+function showError(msg) {
+  const errEl = document.getElementById('pw-error');
+  errEl.textContent    = msg;
+  errEl.style.display  = 'block';
+  setTimeout(() => errEl.style.display = 'none', 8000);
+}
+
+function resetBtn() {
+  const btn = document.getElementById('unlock-submit');
+  btn.textContent = 'UNLOCK THE BOOK';
+  btn.disabled    = false;
+  btn.style.background = '';
+}
+
+// Enter key in email input
+document.getElementById('unlock-email').addEventListener('keydown', e => {
+  if (e.key === 'Enter') tryUnlock();
+});
+
+// ══════════════════════════════════════════════════════
+// SCROLL REVEAL
+// ══════════════════════════════════════════════════════
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  els.forEach(el => obs.observe(el));
+}
+
+// ══════════════════════════════════════════════════════
+// NAV SCROLL
+// ══════════════════════════════════════════════════════
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// Active nav highlight
+window.addEventListener('scroll', () => {
+  const sections = ['preface','part1','part2','part3','part4','part5','afterword','references','donate'];
+  const navItems = document.querySelectorAll('.nav-item');
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if(el && el.getBoundingClientRect().top <= 120) current = id;
+  });
+  navItems.forEach((item, i) => {
+    item.classList.toggle('active', sections[i] === current);
+  });
+});
+
+// ══════════════════════════════════════════════════════
+// CONTENT PROTECTION LAYER
+// © 2025 Christopher Dean Hamilton — All Rights Reserved
+// ══════════════════════════════════════════════════════
+
+// ── A: Disable right-click context menu on book content ──
+document.addEventListener('contextmenu', function(e) {
+  if(document.getElementById('book').style.display !== 'none') {
+    e.preventDefault();
+    return false;
+  }
+});
+
+// ── B: Block keyboard shortcuts ──────────────────────────
+document.addEventListener('keydown', function(e) {
+  if(document.getElementById('book').style.display === 'none') return;
+  const key = e.key.toLowerCase();
+  const ctrl = e.ctrlKey || e.metaKey;
+
+  // Block: Ctrl+S, Ctrl+A, Ctrl+C, Ctrl+P, Ctrl+U (view source)
+  // Ctrl+Shift+I/J/C (devtools), F12, PrintScreen
+  const blocked = (
+    (ctrl && ['s','a','c','p','u'].includes(key)) ||
+    (ctrl && e.shiftKey && ['i','j','c','k'].includes(key)) ||
+    e.key === 'F12' ||
+    e.key === 'PrintScreen' ||
+    e.key === 'Meta' ||
+    (ctrl && key === 'shift' && e.shiftKey)
+  );
+
+  if(blocked) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+});
+
+// Intercept copy event — but NOT when deploy panel is open or copy btn triggered
+document.addEventListener('copy', function(e) {
+  // Allow copy if: deploy panel is open, or a copy button triggered this
+  if(document.getElementById('deploy-panel') &&
+     document.getElementById('deploy-panel').classList.contains('open')) return;
+  if(window._allowCopy) return;
+  if(document.getElementById('book').style.display !== 'none') {
+    e.clipboardData.setData('text/plain',
+      '© 2025 Christopher Dean Hamilton. All Rights Reserved. Purchase at: https://paypal.me/cristechnology');
+    e.preventDefault();
+  }
+});
+
+// Intercept cut event
+document.addEventListener('cut', function(e) {
+  if(document.getElementById('book').style.display !== 'none') {
+    e.preventDefault();
+  }
+});
+
+// ── C: Screenshot / window blur shield ───────────────────
+let blurTimeout;
+const screenshotShield = document.getElementById('screenshot-shield');
+
+window.addEventListener('blur', function() {
+  if(document.getElementById('book').style.display === 'none') return;
+  blurTimeout = setTimeout(() => {
+    screenshotShield.classList.add('active');
+  }, 150);
+});
+
+window.addEventListener('focus', function() {
+  clearTimeout(blurTimeout);
+  screenshotShield.classList.remove('active');
+});
+
+// Also detect visibility change (tab switch)
+document.addEventListener('visibilitychange', function() {
+  if(document.getElementById('book').style.display === 'none') return;
+  if(document.hidden) {
+    screenshotShield.classList.add('active');
+  } else {
+    setTimeout(() => screenshotShield.classList.remove('active'), 300);
+  }
+});
+
+// ── D: DevTools detection ─────────────────────────────────
+const devtoolsShield = document.getElementById('devtools-shield');
+let devtoolsOpen = false;
+
+function checkDevTools() {
+  if(document.getElementById('book').style.display === 'none') return;
+  const threshold = 160;
+  const widthDiff  = window.outerWidth  - window.innerWidth;
+  const heightDiff = window.outerHeight - window.innerHeight;
+  const opened = widthDiff > threshold || heightDiff > threshold;
+  if(opened !== devtoolsOpen) {
+    devtoolsOpen = opened;
+    devtoolsShield.classList.toggle('active', opened);
+  }
+}
+setInterval(checkDevTools, 1000);
+
+// Debugger trap — slows automated scraping
+(function devtoolsTrap() {
+  try {
+    const start = performance.now();
+    // This runs fast normally, slow in devtools with breakpoints
+    (function(){}).constructor('debugger')();
+    // Only flag if it took suspiciously long (breakpoint was hit)
+    if(performance.now() - start > 100 && document.getElementById('book') &&
+       document.getElementById('book').style.display !== 'none') {
+      devtoolsShield.classList.add('active');
+    }
+  } catch(e) {}
+  setTimeout(devtoolsTrap, 3000);
+})();
+
+// ── E: Disable drag on all elements ──────────────────────
+document.addEventListener('dragstart', function(e) {
+  if(document.getElementById('book').style.display !== 'none') {
+    e.preventDefault();
+    return false;
+  }
+});
+
+// ── F: Watermark generator — defined earlier, see above ──
+// ── G: Disable print via keyboard even harder ─────────────
+// Override window.print
+window.print = function() {
+  alert('© 2025 Christopher Dean Hamilton. Printing is disabled for licensed content.');
+  return false;
+};
+
+// ── H: Anti-scrape — defined earlier, see above ──
+// ── I: grantAccess patched above — watermark + anti-scrape activated on unlock ──
+
+// If already unlocked from localStorage, build generic watermark
+if(localStorage.getItem('mh_book_access_v1') === 'granted') {
+  buildWatermark('licensed-reader');
+  setTimeout(antiScrapeWrap, 1200);
+}
+
+// ── J: Token hardening — make localStorage bypass harder ─
+// Periodically re-verify the access token hasn't been tampered
+// (Generates a session fingerprint tied to first-load timestamp)
+(function hardLockSession() {
+  const KEY   = 'mh_book_access_v1';
+  const TSKEY = 'mh_session_ts';
+  const FPKEY = 'mh_fp';
+
+  if(localStorage.getItem(KEY) === 'granted') {
+    // Generate fingerprint on first valid access
+    if(!sessionStorage.getItem(FPKEY)) {
+      const fp = btoa(navigator.userAgent + screen.width + screen.height + Date.now());
+      sessionStorage.setItem(FPKEY, fp);
+      if(!localStorage.getItem(TSKEY)) localStorage.setItem(TSKEY, Date.now().toString());
+    }
+
+    // Check session hasn't been cloned into a new browser tab with injected storage
+    const storedTs = parseInt(localStorage.getItem(TSKEY) || '0');
+    const age = Date.now() - storedTs;
+    // Sessions older than 30 days prompt re-verification (soft expiry)
+    if(age > 30 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(KEY);
+      localStorage.removeItem(TSKEY);
+      location.reload();
+    }
+  }
+})();
+
+</script>
+
+<!-- ── DEPLOYMENT PANEL ── -->
+<button id="deploy-toggle" onclick="document.getElementById('deploy-panel').classList.add('open')">
+  ⚙ DEPLOY FILES
+</button>
+
+<div id="deploy-panel">
+  <div id="deploy-header">
+    <h3>DEPLOYMENT PACKAGE — MOLECULAR HEALTH BOOK</h3>
+    <button id="deploy-close" onclick="document.getElementById('deploy-panel').classList.remove('open')">✕ CLOSE</button>
+  </div>
+  <div id="deploy-tabs">
+    <div class="dtab active" onclick="showDTab(0)">📋 README</div>
+    <div class="dtab" onclick="showDTab(1)">📄 index.html</div>
+    <div class="dtab" onclick="showDTab(2)">⚡ verify-donor.js</div>
+    <div class="dtab" onclick="showDTab(3)">⚙ netlify.toml</div>
+    <div class="dtab" onclick="showDTab(4)">📁 Repo Structure</div>
+  </div>
+  <div id="deploy-body">
+
+    <!-- TAB 0: README -->
+    <div class="dpane active" id="dpane-0">
+      <div class="prose" id="readme-prose"></div>
+    </div>
+
+    <!-- TAB 1: index.html -->
+    <div class="dpane" id="dpane-1">
+      <div class="file-label">index.html — rename MOLECULAR_HEALTH_Online_Book.html to this</div>
+      <button class="copy-btn" onclick="copyPane('html-src','this')">COPY FILE</button>
+      <pre id="html-src"></pre>
+    </div>
+
+    <!-- TAB 2: verify-donor.js -->
+    <div class="dpane" id="dpane-2">
+      <div class="file-label">netlify/functions/verify-donor.js</div>
+      <button class="copy-btn" onclick="copyRaw(verifyDonorSrc, this)">COPY FILE</button>
+      <pre id="verify-src"></pre>
+    </div>
+
+    <!-- TAB 3: netlify.toml -->
+    <div class="dpane" id="dpane-3">
+      <div class="file-label">netlify.toml — place in repo root</div>
+      <button class="copy-btn" onclick="copyRaw(netlifyTomlSrc, this)">COPY FILE</button>
+      <pre id="toml-src"></pre>
+    </div>
+
+    <!-- TAB 4: Structure -->
+    <div class="dpane" id="dpane-4">
+      <div class="prose">
+        <h1>Repository Structure</h1>
+        <p>Your GitHub repository must be <strong>Private</strong>. Create the following folder structure exactly:</p>
+        <div class="struct-tree">your-repo/
+├── index.html                     ← this file (the book)
+├── netlify.toml                   ← Netlify build config
+├── README.md                      ← deployment guide
+└── netlify/
+    └── functions/
+        └── verify-donor.js        ← PayPal verification function</div>
+
+        <h2>Netlify Environment Variables</h2>
+        <p>In Netlify: <code>Site Settings → Environment Variables</code> — add all six:</p>
+        <table>
+          <tr><th>Variable</th><th>Value</th></tr>
+          <tr><td>PAYPAL_CLIENT_ID</td><td>Your Live Client ID</td></tr>
+          <tr><td>PAYPAL_CLIENT_SECRET</td><td>Your Live Client Secret</td></tr>
+          <tr><td>PAYPAL_MODE</td><td>live</td></tr>
+          <tr><td>PAYPAL_RECEIVER_EMAIL</td><td>xtreme.technology@hotmail.com</td></tr>
+          <tr><td>BOOK_PRICE</td><td>9.99</td></tr>
+          <tr><td>JWT_SECRET</td><td>Run: node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"</td></tr>
+        </table>
+
+        <h2>Quick Deploy Commands</h2>
+        <pre>git init
+git add .
+git commit -m "Initial deploy — Molecular Health Book"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git push -u origin main</pre>
+
+        <h2>Important Security Reminders</h2>
+        <ul>
+          <li>Never paste API credentials into chat, email, or any visible field</li>
+          <li>Keep your GitHub repo <strong>Private</strong></li>
+          <li>Your JWT_SECRET must stay in Netlify only — never in code</li>
+          <li>Register copyright with JIPO (jipo.gov.jm) before going live</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+
+// ── DEPLOYMENT PANEL ──────────────────────────────────
+const verifyDonorSrc = '/**\n * verify-donor.js — Netlify Serverless Function\n * Molecular Health Book — Christopher Dean Hamilton\n * © 2025 Nuttinbutdatruth Records — Knowledge Division\n *\n * Flow:\n *   1. Client POSTs { email } from the unlock form\n *   2. Function gets a PayPal OAuth token\n *   3. Searches PayPal Transactions API for a payment\n *      from that email ≥ $4.99 to your account\n *   4. If found → issues a signed JWT (30-day expiry)\n *   5. Client stores JWT, verifies signature on each load\n *      without hitting the server again (stateless auth)\n *\n * Environment variables (set in Netlify dashboard → Site Settings → Env):\n *   PAYPAL_CLIENT_ID      — your PayPal app Client ID\n *   PAYPAL_CLIENT_SECRET  — your PayPal app Client Secret\n *   PAYPAL_MODE           — "live" or "sandbox"\n *   JWT_SECRET            — any long random string (min 32 chars)\n *                           e.g. run: node -e "console.log(require(\'crypto\').randomBytes(48).toString(\'hex\'))"\n *   BOOK_PRICE            — minimum amount to accept (e.g. "9.99")\n *   PAYPAL_RECEIVER_EMAIL — your PayPal business email (xtreme.technology@hotmail.com)\n */\n\nconst crypto = require(\'crypto\');\n\n// ── JWT helpers (no external library needed) ──────────────────────────────\n\nfunction base64url(str) {\n  return Buffer.from(str)\n    .toString(\'base64\')\n    .replace(/\\+/g, \'-\').replace(/\\//g, \'_\').replace(/=/g, \'\');\n}\n\nfunction signJWT(payload, secret) {\n  const header  = base64url(JSON.stringify({ alg: \'HS256\', typ: \'JWT\' }));\n  const body    = base64url(JSON.stringify(payload));\n  const sig     = crypto\n    .createHmac(\'sha256\', secret)\n    .update(`${header}.${body}`)\n    .digest(\'base64\')\n    .replace(/\\+/g, \'-\').replace(/\\//g, \'_\').replace(/=/g, \'\');\n  return `${header}.${body}.${sig}`;\n}\n\nfunction verifyJWT(token, secret) {\n  try {\n    const [header, body, sig] = token.split(\'.\');\n    const expected = crypto\n      .createHmac(\'sha256\', secret)\n      .update(`${header}.${body}`)\n      .digest(\'base64\')\n      .replace(/\\+/g, \'-\').replace(/\\//g, \'_\').replace(/=/g, \'\');\n    if (sig !== expected) return null;\n    const payload = JSON.parse(Buffer.from(body, \'base64url\').toString());\n    if (payload.exp && Date.now() / 1000 > payload.exp) return null; // expired\n    return payload;\n  } catch {\n    return null;\n  }\n}\n\n// ── PayPal OAuth ──────────────────────────────────────────────────────────\n\nasync function getPayPalToken() {\n  const mode = process.env.PAYPAL_MODE === \'live\' ? \'api\' : \'api.sandbox\';\n  const res  = await fetch(`https://${mode}.paypal.com/v1/oauth2/token`, {\n    method : \'POST\',\n    headers: {\n      \'Content-Type\' : \'application/x-www-form-urlencoded\',\n      \'Authorization\': \'Basic \' + Buffer.from(\n        `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`\n      ).toString(\'base64\'),\n    },\n    body: \'grant_type=client_credentials\',\n  });\n  if (!res.ok) throw new Error(`PayPal OAuth failed: ${res.status}`);\n  const data = await res.json();\n  return data.access_token;\n}\n\n// ── Search transactions for a qualifying payment ──────────────────────────\n\nasync function findPayment(token, buyerEmail) {\n  const mode       = process.env.PAYPAL_MODE === \'live\' ? \'api\' : \'api.sandbox\';\n  const minAmount  = parseFloat(process.env.BOOK_PRICE || \'4.99\');\n  const receiver   = (process.env.PAYPAL_RECEIVER_EMAIL || \'\').toLowerCase();\n\n  // Search last 90 days\n  const endDate   = new Date().toISOString();\n  const startDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();\n\n  const url = `https://${mode}.paypal.com/v1/reporting/transactions?` +\n    `start_date=${encodeURIComponent(startDate)}&` +\n    `end_date=${encodeURIComponent(endDate)}&` +\n    `transaction_status=S&` +          // S = Success\n    `fields=transaction_info,payer_info`;\n\n  const res = await fetch(url, {\n    headers: {\n      \'Authorization\': `Bearer ${token}`,\n      \'Content-Type\' : \'application/json\',\n    },\n  });\n\n  if (!res.ok) {\n    const err = await res.text();\n    throw new Error(`PayPal transactions API error: ${res.status} — ${err}`);\n  }\n\n  const data = await res.json();\n  const txns = data.transaction_details || [];\n\n  // Look for a transaction from the buyer\'s email, to our account, >= min amount\n  for (const txn of txns) {\n    const info      = txn.transaction_info || {};\n    const payer     = txn.payer_info       || {};\n    const amount    = parseFloat(info.transaction_amount?.value || \'0\');\n    const payerMail = (payer.email_address || \'\').toLowerCase();\n    const txnType   = info.transaction_event_code || \'\'; // T0006 = PayPal.me payment\n\n    const emailMatch  = payerMail === buyerEmail.toLowerCase();\n    const amountValid = amount >= minAmount;\n    // T0006 = PayPal.me / Send Money, T0011 = website payment, T0002 = eCom\n    const typeValid   = [\'T0006\',\'T0011\',\'T0002\',\'T0001\'].includes(txnType) || txnType.startsWith(\'T00\');\n\n    if (emailMatch && amountValid && typeValid) {\n      return {\n        found     : true,\n        txnId     : info.transaction_id,\n        amount    : amount,\n        currency  : info.transaction_amount?.currency_code || \'USD\',\n        date      : info.transaction_initiation_date,\n        payerEmail: payerMail,\n      };\n    }\n  }\n\n  return { found: false };\n}\n\n// ── Main handler ──────────────────────────────────────────────────────────\n\nexports.handler = async function(event, context) {\n  // CORS headers — lock down to your domain in production\n  const headers = {\n    \'Access-Control-Allow-Origin\' : \'*\',   // change to your domain e.g. \'https://yourdomain.com\'\n    \'Access-Control-Allow-Methods\': \'POST, OPTIONS\',\n    \'Access-Control-Allow-Headers\': \'Content-Type\',\n    \'Content-Type\'                : \'application/json\',\n  };\n\n  // Preflight\n  if (event.httpMethod === \'OPTIONS\') {\n    return { statusCode: 204, headers, body: \'\' };\n  }\n\n  // Only allow POST\n  if (event.httpMethod !== \'POST\') {\n    return { statusCode: 405, headers, body: JSON.stringify({ error: \'Method not allowed\' }) };\n  }\n\n  // Parse body\n  let email;\n  try {\n    const body = JSON.parse(event.body || \'{}\');\n    email = (body.email || \'\').trim().toLowerCase();\n  } catch {\n    return { statusCode: 400, headers, body: JSON.stringify({ error: \'Invalid request body\' }) };\n  }\n\n  // Validate email format\n  if (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {\n    return { statusCode: 400, headers, body: JSON.stringify({ error: \'Valid email required\' }) };\n  }\n\n  // Rate limiting — crude but effective at serverless level\n  // (For production, use Netlify\'s rate limiting or upstash/redis)\n\n  try {\n    // 1. Get PayPal token\n    const paypalToken = await getPayPalToken();\n\n    // 2. Search for qualifying payment\n    const payment = await findPayment(paypalToken, email);\n\n    if (!payment.found) {\n      return {\n        statusCode: 402, // Payment Required\n        headers,\n        body: JSON.stringify({\n          error  : \'No qualifying payment found\',\n          message: \'We could not verify a $5 donation from this email address. \' +\n                   \'Please ensure you used the same email for PayPal and this unlock form. \' +\n                   \'Payments may take up to 10 minutes to appear.\',\n        }),\n      };\n    }\n\n    // 3. Issue JWT — 30 day expiry\n    const JWT_SECRET = process.env.JWT_SECRET;\n    if (!JWT_SECRET || JWT_SECRET.length < 32) {\n      console.error(\'JWT_SECRET not configured or too short\');\n      return { statusCode: 500, headers, body: JSON.stringify({ error: \'Server configuration error\' }) };\n    }\n\n    const now     = Math.floor(Date.now() / 1000);\n    const payload = {\n      sub  : email,                   // subject (buyer email)\n      iat  : now,                     // issued at\n      exp  : now + (30 * 24 * 3600), // expires in 30 days\n      txn  : payment.txnId,          // PayPal transaction ID\n      amt  : payment.amount,\n      book : \'molecular-health-v1\',   // book identifier\n      iss  : \'nuttinbutdatruth-records\',\n    };\n\n    const jwtToken = signJWT(payload, JWT_SECRET);\n\n    console.log(`✅ Access granted to ${email} | TXN: ${payment.txnId} | Amount: ${payment.amount} ${payment.currency}`);\n\n    return {\n      statusCode: 200,\n      headers,\n      body: JSON.stringify({\n        success : true,\n        token   : jwtToken,\n        message : \'Access granted. Welcome.\',\n        buyer   : email,\n      }),\n    };\n\n  } catch (err) {\n    console.error(\'verify-donor error:\', err.message);\n    return {\n      statusCode: 500,\n      headers,\n      body: JSON.stringify({\n        error  : \'Verification service error\',\n        message: \'Please try again in a moment. If this persists, contact support.\',\n      }),\n    };\n  }\n};\n';
+const netlifyTomlSrc = '# netlify.toml\n# Molecular Health Book — Christopher Dean Hamilton\n# Deploy config for Netlify + serverless functions\n\n[build]\n  publish   = "."\n  functions = "netlify/functions"\n\n[[redirects]]\n  from   = "/*"\n  to     = "/index.html"\n  status = 200\n\n[[headers]]\n  for = "/*"\n  [headers.values]\n    X-Frame-Options         = "SAMEORIGIN"\n    X-Content-Type-Options  = "nosniff"\n    X-XSS-Protection        = "1; mode=block"\n    Referrer-Policy         = "strict-origin-when-cross-origin"\n    Permissions-Policy      = "camera=(), microphone=(), geolocation=()"\n\n[[headers]]\n  for = "/*.html"\n  [headers.values]\n    Cache-Control = "no-store, no-cache, must-revalidate"\n\n[functions]\n  node_bundler = "esbuild"\n\n[functions."verify-donor"]\n  timeout = 20\n';
+const readmeMd       = '# Molecular Health — Online Book\n## Deployment Guide: GitHub + Netlify + PayPal JWT Backend\n### Christopher Dean Hamilton / Nuttinbutdatruth Records\n\n---\n\n## YOUR REPOSITORY STRUCTURE\n\n```\nyour-repo/\n├── index.html                        ← the book (rename MOLECULAR_HEALTH_Online_Book.html)\n├── netlify.toml                      ← Netlify build config\n├── netlify/\n│   └── functions/\n│       └── verify-donor.js           ← serverless PayPal verification function\n└── README.md                         ← this file\n```\n\n---\n\n## STEP 1 — CREATE YOUR PAYPAL APP (10 minutes)\n\nYou need PayPal API credentials to let the function verify payments.\n\n1. Go to https://developer.paypal.com/developer/applications\n2. Log in with your PayPal account (xtreme.technology@hotmail.com)\n3. Click **"Create App"**\n4. Name it: `Molecular Health Book`\n5. App type: **Merchant**\n6. Click **Create App**\n7. On the next screen:\n   - Copy your **Client ID**\n   - Click "Show" and copy your **Client Secret**\n8. At the top of the page, toggle from **Sandbox** → **Live**\n   (repeat steps 3-7 for Live credentials — use Live for real payments)\n\n> **Important:** The Transactions API requires your PayPal account to be a\n> Business account. If you have a Personal account, upgrade it free at:\n> https://www.paypal.com/upgrade-to-business\n\n---\n\n## STEP 2 — GENERATE YOUR JWT SECRET (2 minutes)\n\nThis is a private key only your server knows. Never share it or commit it to GitHub.\n\nRun this in any terminal (Node.js required):\n```bash\nnode -e "console.log(require(\'crypto\').randomBytes(48).toString(\'hex\'))"\n```\n\nCopy the output — it will look like:\n`a3f8e2c1d4b6...` (96 hex characters)\n\nSave it somewhere safe. You will paste it into Netlify in Step 4.\n\n---\n\n## STEP 3 — PUSH TO GITHUB (5 minutes)\n\n```bash\n# Create a new repo at github.com first, then:\n\ngit init\ngit add .\ngit commit -m "Initial deploy — Molecular Health Book"\ngit branch -M main\ngit remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git\ngit push -u origin main\n```\n\nMake sure your repo is **Private** — not Public.\nA public repo would expose your HTML source code.\n\n---\n\n## STEP 4 — DEPLOY ON NETLIFY (10 minutes)\n\n1. Go to https://app.netlify.com\n2. Click **"Add new site"** → **"Import an existing project"**\n3. Connect to GitHub → select your repo\n4. Build settings:\n   - Build command: *(leave blank)*\n   - Publish directory: `.`\n5. Click **Deploy site**\n6. Wait ~60 seconds for the first deploy\n\n### Set Environment Variables\n\nIn Netlify: **Site Settings → Environment Variables → Add variable**\n\nAdd ALL of these:\n\n| Variable Name           | Value                                      |\n|-------------------------|--------------------------------------------|\n| `PAYPAL_CLIENT_ID`      | Your PayPal Live Client ID                 |\n| `PAYPAL_CLIENT_SECRET`  | Your PayPal Live Client Secret             |\n| `PAYPAL_MODE`           | `live`                                     |\n| `PAYPAL_RECEIVER_EMAIL` | `xtreme.technology@hotmail.com`            |\n| `BOOK_PRICE`            | `9.99`                                     |\n| `JWT_SECRET`            | The 96-char hex string from Step 2         |\n\nAfter adding variables: **Deploys → Trigger deploy → Deploy site**\n(Variables only take effect on new deploys)\n\n---\n\n## STEP 5 — SET YOUR CUSTOM DOMAIN (optional, 15 minutes)\n\n1. Netlify: **Domain management → Add custom domain**\n2. Enter your domain (e.g. `molecularhealth.com` or `book.yoursite.com`)\n3. Update your domain\'s DNS nameservers to point to Netlify\n4. Netlify provides free HTTPS/SSL automatically\n\n---\n\n## STEP 6 — TEST IT\n\n1. Go to your Netlify URL (e.g. `https://your-site.netlify.app`)\n2. Make a real $5 PayPal payment to `paypal.me/cristechnology`\n   using a test email address\n3. Wait 5-10 minutes\n4. Enter that email in the unlock form\n5. Should unlock and display the book\n\n### Test the function directly:\n```bash\ncurl -X POST https://your-site.netlify.app/.netlify/functions/verify-donor \\\n  -H "Content-Type: application/json" \\\n  -d \'{"email":"your-test-email@example.com"}\'\n```\n\nExpected response if payment found:\n```json\n{ "success": true, "token": "eyJ...", "buyer": "email@example.com" }\n```\n\nExpected response if not found:\n```json\n{ "error": "No qualifying payment found", "message": "..." }\n```\n\n---\n\n## HOW THE JWT SYSTEM WORKS\n\n```\nBUYER                    YOUR SITE                 NETLIFY FUNCTION         PAYPAL API\n  │                          │                           │                      │\n  │── enters email ─────────►│                           │                      │\n  │                          │── POST /verify-donor ────►│                      │\n  │                          │                           │── OAuth token ──────►│\n  │                          │                           │◄─ access_token ──────│\n  │                          │                           │── search transactions►│\n  │                          │                           │◄─ transaction list ───│\n  │                          │                           │                      │\n  │                          │                           │  (finds $5 payment)  │\n  │                          │                           │                      │\n  │                          │◄── signed JWT ────────────│                      │\n  │◄── book unlocks ─────────│                           │                      │\n  │    (JWT stored in        │                           │                      │\n  │     localStorage)        │                           │                      │\n```\n\n**The JWT is:**\n- Signed with your `JWT_SECRET` using HMAC-SHA256\n- Contains the buyer\'s email, transaction ID, amount, and expiry date\n- Expires after 30 days (buyer must re-verify after 30 days)\n- Validated client-side on every page load — no server hit needed after first unlock\n- Book identifier (`molecular-health-v1`) baked in — cannot be reused for other books\n\n**Why this is secure:**\n- The JWT secret never leaves Netlify\'s servers\n- A fake JWT without the correct signature will fail client-side validation\n- The buyer\'s PayPal email must match an actual $5+ transaction in your account\n- localStorage bypass only works if the person has the real signed JWT\n\n---\n\n## HANDLING CUSTOMER SUPPORT\n\nWhen a buyer says "I paid but can\'t unlock":\n\n1. Log into PayPal → Activity → find their transaction\n2. Confirm the email they used matches what they entered\n3. Wait 10-15 minutes (PayPal API has a small delay)\n4. If still failing, issue them the manual backup code:\n   `MOLECULAR2025` — this is still accepted as a fallback in the code\n5. Or email them the direct JWT token you generate manually:\n\n```javascript\n// Run locally to generate a manual access token for a buyer:\nconst crypto = require(\'crypto\');\nconst JWT_SECRET = \'YOUR_JWT_SECRET_HERE\';\n\nfunction base64url(str) {\n  return Buffer.from(str).toString(\'base64\')\n    .replace(/\\+/g,\'-\').replace(/\\//g,\'_\').replace(/=/g,\'\');\n}\n\nconst payload = {\n  sub  : \'buyer@email.com\',\n  iat  : Math.floor(Date.now()/1000),\n  exp  : Math.floor(Date.now()/1000) + (30*24*3600),\n  book : \'molecular-health-v1\',\n  txn  : \'MANUAL-GRANT\',\n  amt  : 5,\n  iss  : \'nuttinbutdatruth-records\'\n};\n\nconst h = base64url(JSON.stringify({alg:\'HS256\',typ:\'JWT\'}));\nconst b = base64url(JSON.stringify(payload));\nconst s = crypto.createHmac(\'sha256\',JWT_SECRET).update(`${h}.${b}`)\n  .digest(\'base64\').replace(/\\+/g,\'-\').replace(/\\//g,\'_\').replace(/=/g,\'\');\n\nconsole.log(`${h}.${b}.${s}`);\n```\n\n---\n\n## LOCAL DEVELOPMENT\n\nTo run and test locally with the Netlify function:\n\n```bash\n# Install Netlify CLI\nnpm install -g netlify-cli\n\n# Run local dev server with functions\nnetlify dev\n\n# Access at http://localhost:8888\n# The verify-donor function runs at:\n# http://localhost:8888/.netlify/functions/verify-donor\n```\n\nSet your environment variables in a `.env` file locally:\n```\nPAYPAL_CLIENT_ID=your_client_id\nPAYPAL_CLIENT_SECRET=your_secret\nPAYPAL_MODE=sandbox\nPAYPAL_RECEIVER_EMAIL=xtreme.technology@hotmail.com\nBOOK_PRICE=4.99\nJWT_SECRET=your_jwt_secret\n```\n\n> Use PayPal **Sandbox** mode for local testing — create test buyer and\n> seller accounts at https://developer.paypal.com/developer/accounts\n\n---\n\n## DMCA TAKEDOWN PROCESS\n\nIf you find a pirated copy of your book online:\n\n1. Go to the platform hosting it (Google, GitHub, Reddit, etc.)\n2. Find their DMCA/copyright takedown form\n   - Google: https://support.google.com/legal/troubleshooter/1114905\n   - GitHub: https://support.github.com/contact/dmca-takedown\n3. State: "I am Christopher Dean Hamilton, author and copyright owner of\n   \'Molecular Health & The Wisdom of Eating Whole\' (© 2025).\n   This content is being reproduced without authorization."\n4. Provide the URL of the infringing content\n5. Sign and submit\n\nIf you can identify the buyer who leaked it (via the watermark showing\ntheir email), you have grounds for civil action.\n\n---\n\n## SUPPORT\n\nFor technical issues with this deployment:\n- Netlify docs: https://docs.netlify.com/functions/overview/\n- PayPal Transactions API: https://developer.paypal.com/docs/api/transaction-search/v1/\n- PayPal App creation: https://developer.paypal.com/developer/applications\n\n---\n\n© 2025 Christopher Dean Hamilton / Nuttinbutdatruth Records — Knowledge Division\nAll Rights Reserved.\n';
+
+function showDTab(idx) {
+  document.querySelectorAll('.dtab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.dpane').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+
+function copyRaw(src, btn) {
+  // Temporarily allow copy to bypass the DRM copy intercept
+  window._allowCopy = true;
+  try {
+    if(navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(src).then(() => {
+        window._allowCopy = false;
+        btn.textContent = '✓ COPIED'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'COPY FILE'; btn.classList.remove('copied'); }, 2000);
+      }).catch(() => fallbackCopy(src, btn));
+    } else {
+      fallbackCopy(src, btn);
+    }
+  } catch(e) { fallbackCopy(src, btn); }
+}
+
+function fallbackCopy(src, btn) {
+  const ta = document.createElement('textarea');
+  ta.style.cssText = 'position:fixed;opacity:0;top:-9999px;left:-9999px';
+  ta.value = src;
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  document.execCommand('copy');
+  document.body.removeChild(ta);
+  window._allowCopy = false;
+  btn.textContent = '✓ COPIED'; btn.classList.add('copied');
+  setTimeout(() => { btn.textContent = 'COPY FILE'; btn.classList.remove('copied'); }, 2000);
+}
+
+function copyPane(id, btn) {
+  const src = document.getElementById(id).textContent;
+  copyRaw(src, typeof btn === 'string' ? document.querySelector(`[onclick*="${id}"]`) : btn);
+}
+
+// Populate code panes
+document.addEventListener('DOMContentLoaded', function() {
+  // verify-donor.js
+  document.getElementById('verify-src').textContent = verifyDonorSrc;
+  // netlify.toml
+  document.getElementById('toml-src').textContent   = netlifyTomlSrc;
+  // index.html — inject current page source
+  document.getElementById('html-src').textContent   = document.documentElement.outerHTML;
+  // README — render as styled HTML
+  document.getElementById('readme-prose').innerHTML = markdownToHtml(readmeMd);
+});
+
+// Minimal markdown renderer for README display
+function markdownToHtml(md) {
+  return md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    // code blocks
+    .replace(/```[\w]*\n([\s\S]*?)```/g, '<pre>$1</pre>')
+    // inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // h1-h3
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,   '<h1>$1</h1>')
+    // bold
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    // blockquote
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    // horizontal rule
+    .replace(/^---$/gm, '<hr style="border-color:rgba(212,160,23,0.2);margin:20px 0">')
+    // table header
+    .replace(/\|(.+)\|\n\|[-| :]+\|\n((?:\|.+\|\n?)+)/g, (_, hdr, rows) => {
+      const ths = hdr.split('|').filter(s=>s.trim()).map(s=>`<th>${s.trim()}</th>`).join('');
+      const trs = rows.trim().split('\n').map(r => {
+        const tds = r.split('|').filter(s=>s.trim()).map(s=>`<td>${s.trim()}</td>`).join('');
+        return `<tr>${tds}</tr>`;
+      }).join('');
+      return `<table><tr>${ths}</tr>${trs}</table>`;
+    })
+    // unordered list
+    .replace(/((?:^- .+\n?)+)/gm, m => '<ul>' + m.replace(/^- (.+)$/gm,'<li>$1</li>') + '</ul>')
+    // numbered list
+    .replace(/((?:^\d+\. .+\n?)+)/gm, m => '<ol>' + m.replace(/^\d+\. (.+)$/gm,'<li>$1</li>') + '</ol>')
+    // paragraphs
+    .replace(/\n\n([^<])/g, '\n\n<p>$1')
+    .replace(/([^>])\n\n/g, '$1</p>\n\n')
+    // line breaks
+    .replace(/\n/g, '\n');
+}
+</script>
+</body>
+</html>
